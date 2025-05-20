@@ -1,20 +1,22 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
+import { CharacterProvider } from "./context/CharacterContext";
+import MainLayout from "./layouts/MainLayout";
 
-import IndexPage from "@/pages/index";
-import DocsPage from "@/pages/docs";
-import PricingPage from "@/pages/pricing";
-import BlogPage from "@/pages/blog";
-import AboutPage from "@/pages/about";
+// ToyVox Pages
+import HomePage from "./pages/HomePage";
+import CharacterPage from "./pages/CharacterPage";
+import DemoPage from "./pages/DemoPage";
 
 function App() {
   return (
-    <Routes>
-      <Route element={<IndexPage />} path="/" />
-      <Route element={<DocsPage />} path="/docs" />
-      <Route element={<PricingPage />} path="/pricing" />
-      <Route element={<BlogPage />} path="/blog" />
-      <Route element={<AboutPage />} path="/about" />
-    </Routes>
+    <CharacterProvider>
+      <Routes>
+        <Route element={<MainLayout><HomePage /></MainLayout>} path="/" />
+        <Route element={<MainLayout><CharacterPage /></MainLayout>} path="/character/:characterId" />
+        <Route element={<MainLayout><DemoPage /></MainLayout>} path="/demo" />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </CharacterProvider>
   );
 }
 
