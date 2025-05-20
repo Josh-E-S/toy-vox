@@ -25,21 +25,21 @@ const HomePage = () => {
           {/* Waiting for toy state */}
           <div className="text-center">
             <div className="animate-pulse mb-6">
-              <div className="w-56 h-56 bg-white bg-opacity-20 rounded-full mx-auto flex items-center justify-center">
-                <div className="w-44 h-44 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
-                  <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center">
-                    <div className="text-gray-800 text-lg font-medium">Place Toy Here</div>
+              <div className="w-96 h-96 bg-white bg-opacity-20 rounded-full mx-auto flex items-center justify-center">
+                <div className="w-60 h-60 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                  <div className="w-48 h-48 bg-white rounded-full flex items-center justify-center">
+                    <div className="text-gray-800 text-2xl font-medium">Place Toy Here</div>
                   </div>
                 </div>
               </div>
             </div>
-            <p className="text-white text-xl">{message}</p>
+            <p className="text-white text-2xl">{message}</p>
           </div>
         </div>
         
         {/* Bottom status area - always visible */}
         <div className="w-full py-4">
-          <p className="text-white text-center text-sm opacity-60">
+          <p className="text-white text-center text-2xl opacity-60">
             Ready for toy interaction
           </p>
         </div>
