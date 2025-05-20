@@ -1,10 +1,9 @@
-import React from 'react';
 import DynamicBackground from '../components/DynamicBackground';
 import { useCharacter } from '../context/CharacterContext';
 import Logo from '../components/Logo';
 import MainLayout from '../layouts/MainLayout';
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
   const { message } = useCharacter();
   
   return (

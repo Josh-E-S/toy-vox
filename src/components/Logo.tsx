@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 interface LogoProps {
@@ -6,7 +5,7 @@ interface LogoProps {
   className?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ size = 'medium', className = '' }) => {
+const Logo = ({ size = 'medium', className = '' }: LogoProps) => {
   const sizeClasses = {
     small: 'h-10',
     medium: 'h-16',

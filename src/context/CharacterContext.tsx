@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { createContext, useState, useContext, ReactNode } from 'react';
 import { Character } from '../config/characters';
 
 type Status = 'waiting' | 'detecting' | 'connecting' | 'active';
@@ -21,7 +21,7 @@ interface CharacterContextType {
 
 const CharacterContext = createContext<CharacterContextType | undefined>(undefined);
 
-export const CharacterProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const CharacterProvider = ({ children }: { children: ReactNode }) => {
   const [status, setStatus] = useState<Status>('waiting');
   const [character, setCharacter] = useState<Character | null>(null);
   const [message, setMessage] = useState<string>('Place a toy on the base to begin');

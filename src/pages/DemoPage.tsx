@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import DynamicBackground from '../components/DynamicBackground';
 import characters from '../config/characters';
 
-const DemoPage: React.FC = () => {
+const DemoPage = () => {
   const [bgType] = useState<'particles'>('particles');
   const [intensity, setIntensity] = useState<'low' | 'medium' | 'high'>('medium');
   const [characterIndex, setCharacterIndex] = useState(0);

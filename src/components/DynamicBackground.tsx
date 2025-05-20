@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface DynamicBackgroundProps {
   character?: {
@@ -10,11 +10,11 @@ interface DynamicBackgroundProps {
   intensity?: 'low' | 'medium' | 'high';
 }
 
-const DynamicBackground: React.FC<DynamicBackgroundProps> = ({ 
+const DynamicBackground = ({ 
   character, 
   type = 'particles', 
   intensity = 'medium' 
-}) => {
+}: DynamicBackgroundProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DynamicBackground from '../components/DynamicBackground';
 import SparkleEffect from '../components/SparkleEffect';
@@ -6,7 +6,7 @@ import { useCharacter } from '../context/CharacterContext';
 import characters from '../config/characters';
 import vapiService from '../services/vapiService';
 
-const CharacterPage: React.FC = () => {
+const CharacterPage = () => {
   const { characterId } = useParams<{ characterId: string }>();
   const navigate = useNavigate();
   const { 

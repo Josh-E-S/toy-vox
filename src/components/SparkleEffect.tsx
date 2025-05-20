@@ -1,10 +1,8 @@
-import React from 'react';
-
 interface SparkleEffectProps {
   active: boolean;
 }
 
-const SparkleEffect: React.FC<SparkleEffectProps> = ({ active }) => {
+const SparkleEffect = ({ active }: SparkleEffectProps) => {
   if (!active) return null;
   
   return (

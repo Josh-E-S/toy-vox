@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import Logo from '../components/Logo';
 import { useLocation } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ interface MainLayoutProps {
   background?: ReactNode;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, background }) => {
+const MainLayout = ({ children, background }: MainLayoutProps) => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   return (
