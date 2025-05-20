@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Character } from '../config/characters';
 
 interface DynamicBackgroundProps {
-  character?: {
-    color?: string;
-    secondaryColor?: string;
-    name?: string;
-  } | null;
+  character?: Character | null;
   type?: 'particles';
   intensity?: 'low' | 'medium' | 'high';
 }
@@ -137,8 +135,174 @@ const DynamicBackground = ({
     };
   }, [dimensions, character, intensity]);
 
+  // State for slideshow
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState<string | null>(null);
+  const [nextSlide, setNextSlide] = useState<string | null>(null);
+  
+  // Handle slideshow transitions
+  useEffect(() => {
+    if (character?.background?.type === 'slideshow' && character.background.slides?.length) {
+      const slides = character.background.slides;
+      const slideDuration = character.background.slideDuration || 10; // Default 10 seconds per slide
+      
+      // Initialize with first slide
+      setCurrentSlide(slides[0].src);
+      
+      if (slides.length > 1) {
+        // Only setup rotation if we have more than one slide
+        const slideInterval = setInterval(() => {
+          const nextIndex = (currentSlideIndex + 1) % slides.length;
+          
+          // Start transition
+          setIsTransitioning(true);
+          setNextSlide(slides[nextIndex].src);
+          
+          // After transition completes, update current slide
+          const transitionDuration = (character.background.transitionDuration || 1.5) * 1000;
+          setTimeout(() => {
+            setCurrentSlide(slides[nextIndex].src);
+            setCurrentSlideIndex(nextIndex);
+            setIsTransitioning(false);
+            setNextSlide(null);
+          }, transitionDuration);
+          
+        }, slideDuration * 1000);
+        
+        return () => clearInterval(slideInterval);
+      }
+    }
+  }, [character, currentSlideIndex]);
+  
   // Render different background types
   const renderBackground = () => {
+    // If character has a custom background
+    if (character?.background) {
+      const { background } = character;
+      const baseStyle = background.overlay 
+        ? { backgroundColor: bgSettings.color }
+        : {};
+      
+      switch (background.type) {
+        case 'slideshow':
+          return (
+            <div className="absolute inset-0 -z-10 overflow-hidden" style={baseStyle}>
+              {type === 'particles' && (
+                <canvas
+                  ref={canvasRef}
+                  className="absolute inset-0"
+                  style={{ opacity: background.overlay ? 0.7 : 0 }}
+                />
+              )}
+              
+              {/* Current slide */}
+              {currentSlide && (
+                <motion.img
+                  key={`slide-${currentSlideIndex}`}
+                  initial={{ opacity: isTransitioning ? 1 : 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: background.transitionDuration || 1.5 }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  src={currentSlide}
+                  alt={`${character?.name || 'Character'} background ${currentSlideIndex + 1}`}
+                />
+              )}
+              
+              {/* Next slide (for transition) */}
+              {isTransitioning && nextSlide && (
+                <motion.img
+                  key={`slide-next`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: background.transitionDuration || 1.5 }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  src={nextSlide}
+                  alt={`${character?.name || 'Character'} background next`}
+                />
+              )}
+            </div>
+          );
+          
+        case 'video':
+          return (
+            <div className="absolute inset-0 -z-10 overflow-hidden" style={baseStyle}>
+              {type === 'particles' && (
+                <canvas
+                  ref={canvasRef}
+                  className="absolute inset-0"
+                  style={{ opacity: background.overlay ? 0.7 : 0 }}
+                />
+              )}
+              <motion.video
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="absolute inset-0 w-full h-full object-cover"
+                src={background.src}
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            </div>
+          );
+          
+        case 'animated-webp':
+        case 'gif':
+          return (
+            <div className="absolute inset-0 -z-10 overflow-hidden" style={baseStyle}>
+              {type === 'particles' && (
+                <canvas
+                  ref={canvasRef}
+                  className="absolute inset-0"
+                  style={{ opacity: background.overlay ? 0.7 : 0 }}
+                />
+              )}
+              <motion.img
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="absolute inset-0 w-full h-full object-cover"
+                src={background.src}
+                alt={`${character?.name || 'Character'} background`}
+              />
+            </div>
+          );
+          
+        case 'image':
+          return (
+            <div className="absolute inset-0 -z-10 overflow-hidden" style={baseStyle}>
+              {type === 'particles' && (
+                <canvas
+                  ref={canvasRef}
+                  className="absolute inset-0"
+                  style={{ opacity: background.overlay ? 0.7 : 0 }}
+                />
+              )}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="absolute inset-0 w-full h-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${background.src})` }}
+              />
+            </div>
+          );
+          
+        default:
+          // Fall back to default background if type is not recognized
+          return renderDefaultBackground();
+      }
+    } else {
+      // No custom background, render default
+      return renderDefaultBackground();
+    }
+  };
+  
+  // Render the default particle or color background
+  const renderDefaultBackground = () => {
     switch (type) {
       case 'particles':
         return (

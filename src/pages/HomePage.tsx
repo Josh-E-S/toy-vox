@@ -1,10 +1,44 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import DynamicBackground from '../components/DynamicBackground';
 import { useCharacter } from '../context/CharacterContext';
 import Logo from '../components/Logo';
 import MainLayout from '../layouts/MainLayout';
 
 const HomePage = () => {
-  const { message } = useCharacter();
+  const { message: contextMessage } = useCharacter();
+  const [currentMessage, setCurrentMessage] = useState(contextMessage);
+  
+  // Array of engaging phrases to cycle through
+  const engagingPhrases = [
+    'Place a toy on the base to begin',
+    'Talk with your toys, not at them',
+    'Experience their world through conversation',
+    "Ask them the questions you've always wondered about",
+    'Every toy has a story waiting to be heard',
+    'Bring your imagination to life',
+    'Your toys are ready to chat with you',
+    'Discover the personalities behind your favorite toys',
+    'Connect with your toys in a whole new way'
+  ];
+  
+  // Cycle through phrases every 5 seconds
+  useEffect(() => {
+    let phraseIndex = 0;
+    
+    // Only cycle phrases when in waiting state (using contextMessage as indicator)
+    if (contextMessage === 'Place a toy on the base to begin') {
+      const intervalId = setInterval(() => {
+        phraseIndex = (phraseIndex + 1) % engagingPhrases.length;
+        setCurrentMessage(engagingPhrases[phraseIndex]);
+      }, 5000);
+      
+      return () => clearInterval(intervalId);
+    } else {
+      // If not in waiting state, use the message from context
+      setCurrentMessage(contextMessage);
+    }
+  }, [contextMessage]);
   
   return (
     <MainLayout 
@@ -33,7 +67,38 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-            <p className="text-white text-2xl">{message}</p>
+            <p className="text-white text-2xl">{currentMessage}</p>
+          </div>
+        </div>
+        
+        {/* Temporary character navigation links for testing */}
+        <div className="w-full py-8 flex flex-col items-center">
+          <h3 className="text-white text-xl mb-4">Quick Test Links:</h3>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link 
+              to="/character/chungy001" 
+              className="px-4 py-2 bg-[#2c4672] text-white rounded-full hover:opacity-80 transition-opacity"
+            >
+              General Chungus
+            </Link>
+            <Link 
+              to="/character/sonic001" 
+              className="px-4 py-2 bg-[#0066cc] text-white rounded-full hover:opacity-80 transition-opacity"
+            >
+              Sonic
+            </Link>
+            <Link 
+              to="/character/shadow001" 
+              className="px-4 py-2 bg-[#990000] text-white rounded-full hover:opacity-80 transition-opacity"
+            >
+              Shadow
+            </Link>
+            <Link 
+              to="/character/sponge001" 
+              className="px-4 py-2 bg-[#ffcc00] text-black rounded-full hover:opacity-80 transition-opacity"
+            >
+              SpongeBob
+            </Link>
           </div>
         </div>
         

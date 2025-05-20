@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence, useAnimation, Variants } from 'framer-motion';
 import DynamicBackground from '../components/DynamicBackground';
 import SparkleEffect from '../components/SparkleEffect';
 import { useCharacter } from '../context/CharacterContext';
@@ -7,6 +8,48 @@ import characters from '../config/characters';
 import vapiService from '../services/vapiService';
 
 const CharacterPage = () => {
+  // Animation controls
+  const controls = useAnimation();
+  
+  // Animation variants
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        when: "beforeChildren",
+        staggerChildren: 0.3
+      }
+    },
+    exit: { 
+      opacity: 0,
+      transition: { when: "afterChildren" }
+    }
+  };
+  
+  const itemVariants: Variants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { type: "spring", stiffness: 300, damping: 24 }
+    },
+    exit: { y: -20, opacity: 0 }
+  };
+  
+  // Animation variants for pulsing elements
+  const audioVisualizationVariants: Variants = {
+    inactive: { scale: 1, opacity: 0 },
+    active: { 
+      scale: [1, 1.2, 1],
+      opacity: [0.3, 0.7, 0.3],
+      transition: { 
+        repeat: Infinity, 
+        duration: 2,
+        ease: "easeInOut" 
+      }
+    }
+  };
   const { characterId } = useParams<{ characterId: string }>();
   const navigate = useNavigate();
   const { 
@@ -153,113 +196,266 @@ const CharacterPage = () => {
     }
   };
 
+  // Start animations when component mounts
+  useEffect(() => {
+    controls.start('visible');
+  }, [controls]);
+
+  // Update animation state based on listening status
+  useEffect(() => {
+    if (isListening) {
+      controls.start('active');
+    } else {
+      controls.start('inactive');
+    }
+  }, [isListening, controls]);
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* Dynamic Background */}
       <DynamicBackground character={character} />
       
       {/* Main App UI */}
-      <div className="relative z-10 flex flex-col items-center justify-between min-h-screen p-4">
+      <motion.div 
+        className="relative z-10 flex flex-col items-center justify-between min-h-screen p-4"
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        variants={containerVariants}
+      >
         {/* Status bar */}
-        <div className="w-full flex justify-between items-center py-2">
+        <motion.div 
+          className="w-full flex justify-between items-center py-2"
+          variants={itemVariants}
+        >
           <div className="text-white text-lg font-semibold opacity-0">Spacer</div>
-          {status !== 'waiting' && (
-            <button 
-              onClick={handleReset}
-              className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm"
-            >
-              Reset
-            </button>
-          )}
-        </div>
+          <AnimatePresence>
+            {status !== 'waiting' && (
+              <motion.button 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleReset}
+                className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm"
+              >
+                Reset
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </motion.div>
         
         {/* Main content area */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto">
-          {status === 'detecting' || status === 'connecting' ? (
-            /* Detecting/connecting state */
-            <div className="text-center">
-              <div className="mb-6 relative">
-                <div className="w-40 h-40 mx-auto relative">
-                  <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-20 border-t-white animate-spin" />
-                  {status === 'connecting' && <SparkleEffect active={true} />}
-                </div>
-              </div>
-              <p className="text-white text-xl">{message}</p>
-            </div>
-          ) : status === 'active' && character ? (
-            /* Active conversation state */
-            <div className="text-center w-full">
-              <h2 className="text-white text-3xl font-bold mb-6">{character.name}</h2>
-              
-              {/* Character circle */}
-              <div 
-                className="mx-auto mb-6 relative cursor-pointer"
-                onClick={handleTapToTalk}
+        <motion.div 
+          className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto"
+          variants={itemVariants}
+        >
+          <AnimatePresence mode="wait">
+            {status === 'detecting' || status === 'connecting' ? (
+              /* Detecting/connecting state */
+              <motion.div 
+                key="detecting"
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
               >
-                <div 
-                  className={`w-48 h-48 rounded-full mx-auto flex items-center justify-center transition-all duration-300 ${isListening ? 'scale-105' : 'scale-100'}`}
-                  style={{ 
-                    backgroundColor: character.color,
-                    boxShadow: `0 0 ${20 + audioLevel * 50}px ${character.color}`
+                <motion.div 
+                  className="mb-6 relative"
+                  animate={{ 
+                    rotate: status === 'connecting' ? [0, 360] : 0 
+                  }}
+                  transition={{ 
+                    repeat: status === 'connecting' ? Infinity : 0,
+                    duration: 3,
+                    ease: "linear"
                   }}
                 >
-                  <div className="w-40 h-40 bg-white rounded-full flex items-center justify-center">
-                    <div 
-                      className={`text-xl font-medium transition-all duration-300 ${isListening ? 'scale-110' : 'scale-100'}`}
-                      style={{ color: character.color }}
-                    >
-                      {isListening ? 'Listening...' : 'Tap to Talk'}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Audio visualization rings */}
-                {isListening && (
-                  <>
-                    <div 
-                      className="absolute top-0 left-0 w-full h-full rounded-full animate-ping opacity-20"
-                      style={{ 
-                        backgroundColor: character.color,
-                        animationDuration: '1s'
+                  <motion.div 
+                    className="w-40 h-40 mx-auto relative"
+                    animate={{
+                      scale: [1, 1.05, 1],
+                      boxShadow: [
+                        `0 0 10px rgba(255,255,255,0.5)`,
+                        `0 0 20px rgba(255,255,255,0.7)`,
+                        `0 0 10px rgba(255,255,255,0.5)`
+                      ]
+                    }}
+                    transition={{ 
+                      repeat: Infinity, 
+                      duration: 2,
+                      ease: "easeInOut" 
+                    }}
+                  >
+                    <motion.div 
+                      className="absolute inset-0 rounded-full border-4 border-white border-opacity-20 border-t-white" 
+                      animate={{ rotate: 360 }}
+                      transition={{ 
+                        repeat: Infinity, 
+                        duration: 1.5,
+                        ease: "linear" 
                       }}
                     />
-                    {[...Array(3)].map((_, i) => (
-                      <div 
-                        key={i}
-                        className="absolute top-0 left-0 w-full h-full rounded-full opacity-0"
-                        style={{ 
-                          backgroundColor: character.color,
-                          transform: `scale(${1 + ((i + 1) * 0.15)})`,
-                          opacity: isListening ? Math.max(0, audioLevel - (i * 0.2)) : 0,
-                          transition: 'opacity 0.1s ease-out'
-                        }}
-                      />
-                    ))}
-                  </>
-                )}
-              </div>
-              
-              {/* Transcript display */}
-              {transcript && (
-                <div className="bg-white bg-opacity-10 p-4 rounded-lg text-white mb-6 max-w-sm mx-auto">
-                  <p>"{transcript}"</p>
-                </div>
-              )}
-              
-              <p className="text-white text-lg max-w-sm mx-auto">{message}</p>
-            </div>
-          ) : null}
-        </div>
+                    {status === 'connecting' && <SparkleEffect active={true} />}
+                  </motion.div>
+                </motion.div>
+                <motion.p 
+                  className="text-white text-xl"
+                  animate={{ 
+                    opacity: [0.7, 1, 0.7] 
+                  }}
+                  transition={{ 
+                    repeat: Infinity, 
+                    duration: 2,
+                    ease: "easeInOut" 
+                  }}
+                >
+                  {message}
+                </motion.p>
+              </motion.div>
+            ) : status === 'active' && character ? (
+              /* Active conversation state */
+              <motion.div 
+                key="active"
+                className="text-center w-full"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              >
+                <motion.h2 
+                  className="text-white text-3xl font-bold mb-6"
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {character.name}
+                </motion.h2>
+                
+                {/* Character circle */}
+                <motion.div 
+                  className="mx-auto mb-6 relative cursor-pointer"
+                  onClick={handleTapToTalk}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <motion.div 
+                    className="w-48 h-48 rounded-full mx-auto flex items-center justify-center"
+                    animate={{
+                      scale: isListening ? [1, 1.05, 1] : 1,
+                      boxShadow: `0 0 ${20 + audioLevel * 50}px ${character.color}`
+                    }}
+                    transition={isListening ? { 
+                      scale: {
+                        repeat: Infinity, 
+                        duration: 1.5,
+                        ease: "easeInOut"
+                      }
+                    } : {}}
+                    style={{ backgroundColor: character.color }}
+                  >
+                    <motion.div 
+                      className="w-40 h-40 bg-white rounded-full flex items-center justify-center"
+                      animate={{ scale: isListening ? 1.05 : 1 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                      <motion.div 
+                        className="text-xl font-medium"
+                        animate={{ scale: isListening ? 1.1 : 1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        style={{ color: character.color }}
+                      >
+                        {isListening ? 'Listening...' : 'Tap to Talk'}
+                      </motion.div>
+                    </motion.div>
+                  </motion.div>
+                  
+                  {/* Audio visualization rings */}
+                  <AnimatePresence>
+                    {isListening && (
+                      <>
+                        <motion.div 
+                          initial="inactive"
+                          animate="active"
+                          exit={{ opacity: 0 }}
+                          variants={audioVisualizationVariants}
+                          className="absolute top-0 left-0 w-full h-full rounded-full"
+                          style={{ backgroundColor: character.color }}
+                        />
+                        {[...Array(3)].map((_, i) => (
+                          <motion.div 
+                            key={i}
+                            className="absolute top-0 left-0 w-full h-full rounded-full"
+                            initial={{ scale: 1 + ((i + 1) * 0.15), opacity: 0 }}
+                            animate={{ 
+                              opacity: isListening ? Math.max(0, audioLevel - (i * 0.2)) : 0 
+                            }}
+                            exit={{ opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            style={{ backgroundColor: character.color }}
+                          />
+                        ))}
+                      </>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+                
+                {/* Transcript display */}
+                <AnimatePresence>
+                  {transcript && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      className="bg-white bg-opacity-10 p-4 rounded-lg text-white mb-6 max-w-sm mx-auto"
+                    >
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        "{transcript}"
+                      </motion.p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <motion.p 
+                  className="text-white text-lg max-w-sm mx-auto"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {message}
+                </motion.p>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </motion.div>
         
         {/* Bottom status area - always visible */}
-        <div className="w-full py-4">
-          <p className="text-white text-center text-sm opacity-60">
+        <motion.div 
+          className="w-full py-4"
+          variants={itemVariants}
+        >
+          <motion.p 
+            className="text-white text-center text-sm opacity-60"
+            animate={{ opacity: [0.5, 0.7, 0.5] }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 4,
+              ease: "easeInOut" 
+            }}
+          >
             {status === 'active' && character
               ? `Character: ${character.name} | Personality: ${character.personality}`
               : 'Ready for toy interaction'}
-          </p>
-        </div>
-      </div>
+          </motion.p>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
