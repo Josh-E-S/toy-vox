@@ -25,7 +25,7 @@ const DemoPage: React.FC = () => {
       
       {/* Controls */}
       <div className="relative z-10 p-4 flex flex-col h-screen">
-        <h1 className="text-white text-3xl font-bold mb-8">ToyVox Backgrounds</h1>
+        <div className="mb-8"></div>
         
         <div className="flex-1 flex items-center justify-center">
           <div className="bg-black bg-opacity-30 backdrop-blur-md p-6 rounded-xl text-white max-w-md w-full">

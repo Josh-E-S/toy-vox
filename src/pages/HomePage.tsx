@@ -14,7 +14,7 @@ const HomePage: React.FC = () => {
       <div className="relative z-10 flex flex-col items-center justify-between min-h-screen p-4">
         {/* Status bar */}
         <div className="w-full flex justify-between items-center py-2">
-          <div className="text-white text-lg font-semibold opacity-80">ToyVox</div>
+          <div className="text-white text-lg font-semibold opacity-0">Spacer</div>
         </div>
         
         {/* Main content area */}
