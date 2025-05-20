@@ -1,10 +1,10 @@
-# ToyTalk: NFC-Activated Character Voice Interaction
+# ToyVox: NFC-Activated Character Voice Interaction
 
 A React-based web application for the Vapi Build Challenge that enables NFC-activated character voice interactions.
 
 ## Overview
 
-ToyTalk is a minimalist but functional prototype that demonstrates NFC-activated character voice interactions. The application features:
+ToyVox is a minimalist but functional prototype that demonstrates NFC-activated character voice interactions. The application features:
 
 - Web-based application with responsive design
 - Particle animation backgrounds for visual engagement
