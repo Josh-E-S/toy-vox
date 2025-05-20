@@ -28,8 +28,8 @@ const DynamicBackground: React.FC<DynamicBackgroundProps> = ({
     color: character.secondaryColor || '#1e324f',
     accentColor: character.color || '#2c4672',
   } : {
-    color: '#1a1a2e',
-    accentColor: '#4a78c8',
+    color: '#050510', // Very dark background for maximum contrast
+    accentColor: '#4a90e2', // Vibrant blue for better visibility
   };
 
   // Handle window resizing
@@ -52,8 +52,10 @@ const DynamicBackground: React.FC<DynamicBackgroundProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Initialize particle animation
+  // Initialize animation based on type
   useEffect(() => {
+    // Only proceed if we're using the particles type
+    if (type !== 'particles') return;
     if (!canvasRef.current) return;
     
     const canvas = canvasRef.current;
@@ -67,19 +69,19 @@ const DynamicBackground: React.FC<DynamicBackgroundProps> = ({
     
     // Determine number of particles based on intensity
     const particleCount = 
-      intensity === 'low' ? 30 :
-      intensity === 'medium' ? 60 :
-      intensity === 'high' ? 120 : 60;
+      intensity === 'low' ? 40 :
+      intensity === 'medium' ? 80 :
+      intensity === 'high' ? 150 : 80;
     
     // Initialize particles
     particlesRef.current = Array(particleCount).fill(null).map(() => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      size: Math.random() * 5 + 1,
-      speedX: (Math.random() - 0.5) * 0.8,
-      speedY: (Math.random() - 0.5) * 0.8,
-      opacity: Math.random() * 0.5 + 0.2,
-      color: Math.random() > 0.7 ? bgSettings.accentColor : bgSettings.color
+      size: Math.random() * 6 + 2, // Larger particles
+      speedX: (Math.random() - 0.5) * 1.0, // Slightly faster
+      speedY: (Math.random() - 0.5) * 1.0, // Slightly faster
+      opacity: Math.random() * 0.6 + 0.4, // Higher opacity
+      color: Math.random() > 0.5 ? bgSettings.accentColor : bgSettings.color // More accent particles
     }));
     
     const animate = () => {
@@ -110,11 +112,11 @@ const DynamicBackground: React.FC<DynamicBackgroundProps> = ({
           const dy = particle.y - otherParticle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < 100) {
+          if (distance < 150) { // Increased connection distance
             ctx.beginPath();
             ctx.strokeStyle = particle.color;
-            ctx.globalAlpha = 0.2 * (1 - distance / 100);
-            ctx.lineWidth = 0.5;
+            ctx.globalAlpha = 0.4 * (1 - distance / 150); // Increased opacity
+            ctx.lineWidth = 1.0; // Thicker lines
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(otherParticle.x, otherParticle.y);
             ctx.stroke();
@@ -135,13 +137,28 @@ const DynamicBackground: React.FC<DynamicBackgroundProps> = ({
     };
   }, [dimensions, character, intensity]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 -z-10"
-      style={{ backgroundColor: bgSettings.color }}
-    />
-  );
+  // Render different background types
+  const renderBackground = () => {
+    switch (type) {
+      case 'particles':
+        return (
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 -z-10"
+            style={{ backgroundColor: bgSettings.color }}
+          />
+        );
+      default:
+        return (
+          <div 
+            className="absolute inset-0 -z-10" 
+            style={{ backgroundColor: bgSettings.color }}
+          />
+        );
+    }
+  };
+
+  return renderBackground();
 };
 
 export default DynamicBackground;

@@ -2,15 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 interface LogoProps {
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'Xlarge';
   className?: string;
 }
 
 const Logo: React.FC<LogoProps> = ({ size = 'medium', className = '' }) => {
   const sizeClasses = {
-    small: 'h-6',
-    medium: 'h-8',
-    large: 'h-12'
+    small: 'h-10',
+    medium: 'h-16',
+    large: 'h-24',
+    Xlarge: 'h-56'
   };
 
   return (
