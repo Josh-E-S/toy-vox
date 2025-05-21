@@ -34,9 +34,9 @@ const characters: Characters = {
     greeting: "Hey there, young adventurer! General Chungus at your service!",
     background: {
       type: 'slideshow',
-      overlay: false,
-      transitionDuration: 1.5, // 1.5 second fade transition
-      slideDuration: 8, // Each slide shows for 8 seconds
+      overlay: true,
+      transitionDuration: 1.2, // 1.2 second fade transition
+      slideDuration: 2.4, // Each slide shows for 8 seconds
       slides: [
         { src: '/assets/characters/chungy001/background.gif', type: 'gif' },
         { src: '/assets/characters/chungy001/background2.gif', type: 'gif' },
@@ -49,26 +49,37 @@ const characters: Characters = {
     name: 'Sonic',
     color: '#0066cc',
     secondaryColor: '#003366',
-    personality: 'Fast, confident, heroic',
-    greeting: "Hey there! I'm Sonic - the fastest thing alive! What's up?",
+    personality: 'Fast, cocky, heroic',
+    greeting: "I'm Sonic! Sonic the Hedgehog!",
     background: {
-      type: 'animated-webp',
-      src: '/assets/characters/sonic001/background.webp',
-      fallbackSrc: '/assets/characters/sonic001/background.gif',
-      overlay: false
+      type: 'slideshow',
+      overlay: true,
+      transitionDuration: 1.2, // 1.2 second fade transition
+      slideDuration: 2.4, // Each slide shows for 8 seconds
+      slides: [
+        { src: '/assets/characters/sonic001/background.gif', type: 'gif' },
+        { src: '/assets/characters/sonic001/background2.gif', type: 'gif' },
+        { src: '/assets/characters/sonic001/background3.gif', type: 'gif' }
+      ]
     }
   },
   'shadow001': {
     id: 'shadow001',
     name: 'Shadow',
-    color: '#990000',
-    secondaryColor: '#330000',
-    personality: 'Mysterious, determined, powerful',
-    greeting: "I am Shadow, the Ultimate Life Form. What do you want?",
+    color: '#ff0000',
+    secondaryColor: '#990000',
+    personality: 'Dark, brooding, mysterious',
+    greeting: "I am Shadow, the Ultimate Life Form.",
     background: {
-      type: 'image',
-      src: '/assets/characters/shadow001/background.png',
-      overlay: true
+      type: 'slideshow',
+      overlay: true,
+      transitionDuration: 1.2, // 1.2 second fade transition
+      slideDuration: 2.4, // Each slide shows for 8 seconds
+      slides: [
+        { src: '/assets/characters/shadow001/background.gif', type: 'gif' },
+        { src: '/assets/characters/shadow001/background2.gif', type: 'gif' },
+        { src: '/assets/characters/shadow001/background3.gif', type: 'gif' }
+      ]
     }
   },
   'sponge001': {
@@ -79,9 +90,15 @@ const characters: Characters = {
     personality: 'Cheerful, optimistic, energetic',
     greeting: "I'm ready! I'm ready! Hi, I'm SpongeBob SquarePants!",
     background: {
-      type: 'gif',
-      src: '/assets/characters/sponge001/background.gif',
-      overlay: false
+      type: 'slideshow',
+      overlay: true,
+      transitionDuration: 1.2, // 1.2 second fade transition
+      slideDuration: 2.4, // Each slide shows for 8 seconds
+      slides: [
+        { src: '/assets/characters/sponge001/background.gif', type: 'gif' },
+        { src: '/assets/characters/sponge001/background2.gif', type: 'gif' },
+        { src: '/assets/characters/sponge001/background3.gif', type: 'gif' }
+      ]
     }
   }
 };

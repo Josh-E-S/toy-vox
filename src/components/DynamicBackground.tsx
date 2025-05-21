@@ -135,45 +135,29 @@ const DynamicBackground = ({
     };
   }, [dimensions, character, intensity]);
 
-  // State for slideshow
+  // Simple counter for slideshow
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState<string | null>(null);
-  const [nextSlide, setNextSlide] = useState<string | null>(null);
   
-  // Handle slideshow transitions
+  // Simple slideshow effect with reduced updates
   useEffect(() => {
-    if (character?.background?.type === 'slideshow' && character.background.slides?.length) {
+    // Only setup slideshow if we have multiple slides
+    if (character?.background?.type === 'slideshow' && 
+        character.background.slides && 
+        character.background.slides.length > 1) {
+      
       const slides = character.background.slides;
-      const slideDuration = character.background.slideDuration || 10; // Default 10 seconds per slide
+      // Use a longer duration to reduce flickering
+      const slideDuration = character.background.slideDuration || 8; // Default 8 seconds
       
-      // Initialize with first slide
-      setCurrentSlide(slides[0].src);
+      // Set up interval to advance slides
+      const slideInterval = setInterval(() => {
+        setCurrentSlideIndex(prevIndex => (prevIndex + 1) % slides.length);
+      }, slideDuration * 1000);
       
-      if (slides.length > 1) {
-        // Only setup rotation if we have more than one slide
-        const slideInterval = setInterval(() => {
-          const nextIndex = (currentSlideIndex + 1) % slides.length;
-          
-          // Start transition
-          setIsTransitioning(true);
-          setNextSlide(slides[nextIndex].src);
-          
-          // After transition completes, update current slide
-          const transitionDuration = (character.background.transitionDuration || 1.5) * 1000;
-          setTimeout(() => {
-            setCurrentSlide(slides[nextIndex].src);
-            setCurrentSlideIndex(nextIndex);
-            setIsTransitioning(false);
-            setNextSlide(null);
-          }, transitionDuration);
-          
-        }, slideDuration * 1000);
-        
-        return () => clearInterval(slideInterval);
-      }
+      // Clean up interval on unmount
+      return () => clearInterval(slideInterval);
     }
-  }, [character, currentSlideIndex]);
+  }, [character?.id]); // Only change when character ID changes, not on every render
   
   // Render different background types
   const renderBackground = () => {
@@ -196,30 +180,25 @@ const DynamicBackground = ({
                 />
               )}
               
-              {/* Current slide */}
-              {currentSlide && (
-                <motion.img
-                  key={`slide-${currentSlideIndex}`}
-                  initial={{ opacity: isTransitioning ? 1 : 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: background.transitionDuration || 1.5 }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  src={currentSlide}
-                  alt={`${character?.name || 'Character'} background ${currentSlideIndex + 1}`}
-                />
+              {/* Simple static image display without AnimatePresence to prevent flickering */}
+              {background.slides && background.slides.length > 0 && (
+                <div className="absolute inset-0 w-full h-full">
+                  <img
+                    className="absolute inset-0 w-full h-full object-cover"
+                    src={background.slides[currentSlideIndex].src}
+                    alt={`${character?.name || 'Character'} background ${currentSlideIndex + 1}`}
+                  />
+                </div>
               )}
               
-              {/* Next slide (for transition) */}
-              {isTransitioning && nextSlide && (
-                <motion.img
-                  key={`slide-next`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: background.transitionDuration || 1.5 }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  src={nextSlide}
-                  alt={`${character?.name || 'Character'} background next`}
+              {/* Dark overlay */}
+              {background.overlay && (
+                <div 
+                  className="absolute inset-0 z-0" 
+                  style={{ 
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', 
+                    mixBlendMode: 'multiply' 
+                  }}
                 />
               )}
             </div>
