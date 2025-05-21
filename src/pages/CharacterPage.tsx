@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimation, Variants } from 'framer-motion';
 import DynamicBackground from '../components/DynamicBackground';
 import SparkleEffect from '../components/SparkleEffect';
+import AudioVisualizer from '../components/AudioVisualizer';
 import { useCharacter } from '../context/CharacterContext';
 import characters from '../config/characters';
 import vapiService from '../services/vapiService';
@@ -37,19 +38,7 @@ const CharacterPage = () => {
     exit: { y: -20, opacity: 0 }
   };
   
-  // Animation variants for pulsing elements
-  const audioVisualizationVariants: Variants = {
-    inactive: { scale: 1, opacity: 0 },
-    active: { 
-      scale: [1, 1.2, 1],
-      opacity: [0.3, 0.7, 0.3],
-      transition: { 
-        repeat: Infinity, 
-        duration: 2,
-        ease: "easeInOut" 
-      }
-    }
-  };
+  // Animation variants removed as we no longer need the oval indicator
   const { characterId } = useParams<{ characterId: string }>();
   const navigate = useNavigate();
   const { 
@@ -69,12 +58,19 @@ const CharacterPage = () => {
     handleReset
   } = useCharacter();
 
-  // Simulate audio levels when listening
+  // Simulate audio levels when listening - with smoother transitions
   useEffect(() => {
     if (isListening) {
+      // Use a more stable audio level simulation with less variance
+      let currentLevel = 0.3; // Start with a moderate level
+      
       const audioSimulation = setInterval(() => {
-        setAudioLevel(Math.random() * 0.8);
-      }, 100);
+        // Small random adjustment to current level (max ±0.1)
+        const adjustment = (Math.random() * 0.2) - 0.1;
+        // Ensure level stays between 0.2 and 0.6 for stability
+        currentLevel = Math.max(0.2, Math.min(0.6, currentLevel + adjustment));
+        setAudioLevel(currentLevel);
+      }, 300); // Slower updates (300ms instead of 100ms)
       
       return () => clearInterval(audioSimulation);
     } else {
@@ -181,8 +177,20 @@ const CharacterPage = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Dynamic Background */}
+      {/* Character Background */}
       <DynamicBackground character={character} />
+      
+      {/* Audio Visualizer - shown when character is active */}
+      {status === 'active' && character && (
+        <AudioVisualizer 
+          character={character} 
+          audioLevel={audioLevel} 
+          className="opacity-80"
+        />
+      )}
+      
+      {/* Sparkle Effect - only shown during specific states */}
+      <SparkleEffect active={status === 'detecting' || status === 'connecting'} />
       
       {/* Main App UI */}
       <motion.div 
@@ -303,73 +311,27 @@ const CharacterPage = () => {
                   {character.name}
                 </motion.h2>
                 
-                {/* Character circle */}
-                <motion.div 
-                  className="mx-auto mb-6 relative cursor-pointer"
+                {/* Character circle - text only version, no colored oval */}
+                <div 
+                  className="mx-auto mb-6 relative cursor-pointer hover:scale-105 active:scale-95 transition-transform"
                   onClick={handleTapToTalk}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
                 >
-                  <motion.div 
-                    className="w-48 h-48 rounded-full mx-auto flex items-center justify-center"
-                    animate={{
-                      scale: isListening ? [1, 1.05, 1] : 1,
-                      boxShadow: `0 0 ${20 + audioLevel * 50}px ${character.color}`
-                    }}
-                    transition={isListening ? { 
-                      scale: {
-                        repeat: Infinity, 
-                        duration: 1.5,
-                        ease: "easeInOut"
-                      }
-                    } : {}}
-                    style={{ backgroundColor: character.color }}
+                  <div 
+                    className="w-48 h-48 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg"
                   >
-                    <motion.div 
-                      className="w-40 h-40 bg-white rounded-full flex items-center justify-center"
-                      animate={{ scale: isListening ? 1.05 : 1 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    <div 
+                      className="text-xl font-medium"
+                      style={{ color: character?.color || '#4a90e2' }}
                     >
-                      <motion.div 
-                        className="text-xl font-medium"
-                        animate={{ scale: isListening ? 1.1 : 1 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        style={{ color: character.color }}
-                      >
-                        {isListening ? 'Listening...' : 'Tap to Talk'}
-                      </motion.div>
-                    </motion.div>
-                  </motion.div>
+                      {isListening ? 'Listening...' : 'Tap to Talk'}
+                    </div>
+                  </div>
                   
-                  {/* Audio visualization rings */}
-                  <AnimatePresence>
-                    {isListening && (
-                      <>
-                        <motion.div 
-                          initial="inactive"
-                          animate="active"
-                          exit={{ opacity: 0 }}
-                          variants={audioVisualizationVariants}
-                          className="absolute top-0 left-0 w-full h-full rounded-full"
-                          style={{ backgroundColor: character.color }}
-                        />
-                        {[...Array(3)].map((_, i) => (
-                          <motion.div 
-                            key={i}
-                            className="absolute top-0 left-0 w-full h-full rounded-full"
-                            initial={{ scale: 1 + ((i + 1) * 0.15), opacity: 0 }}
-                            animate={{ 
-                              opacity: isListening ? Math.max(0, audioLevel - (i * 0.2)) : 0 
-                            }}
-                            exit={{ opacity: 0 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            style={{ backgroundColor: character.color }}
-                          />
-                        ))}
-                      </>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
+                  {/* Small dot indicator for listening state */}
+                  {isListening && (
+                    <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-green-500 animate-pulse"></div>
+                  )}
+                </div>
                 
                 {/* Transcript display */}
                 <AnimatePresence>
