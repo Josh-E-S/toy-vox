@@ -78,7 +78,8 @@ const characters: Characters = {
       slides: [
         { src: '/assets/characters/shadow001/background.gif', type: 'gif' },
         { src: '/assets/characters/shadow001/background2.gif', type: 'gif' },
-        { src: '/assets/characters/shadow001/background3.gif', type: 'gif' }
+        { src: '/assets/characters/shadow001/background3.gif', type: 'gif' },
+        { src: '/assets/characters/shadow001/background4.gif', type: 'gif' }
       ]
     }
   },

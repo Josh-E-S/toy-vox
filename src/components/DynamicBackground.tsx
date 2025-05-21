@@ -135,34 +135,21 @@ const DynamicBackground = ({
     };
   }, [dimensions, character, intensity]);
 
-  // Simple counter for slideshow with immediate start
+  // Simple counter for slideshow
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [slideshowStarted, setSlideshowStarted] = useState(false);
   
-  // Initialize slideshow when character changes
+  // Simple slideshow effect with reduced updates
   useEffect(() => {
+    // Only setup slideshow if we have multiple slides
     if (character?.background?.type === 'slideshow' && 
-        character.background.slides && 
-        character.background.slides.length > 0) {
-      
-      // Reset to first slide when character changes
-      setCurrentSlideIndex(0);
-      setSlideshowStarted(true);
-    }
-  }, [character?.id]);
-  
-  // Handle slideshow cycling with immediate start
-  useEffect(() => {
-    // Only setup slideshow if we have multiple slides and it's been started
-    if (slideshowStarted && 
-        character?.background?.type === 'slideshow' && 
         character.background.slides && 
         character.background.slides.length > 1) {
       
       const slides = character.background.slides;
-      const slideDuration = character.background.slideDuration || 2.4; // Default duration
+      // Use a longer duration to reduce flickering
+      const slideDuration = character.background.slideDuration || 8; // Default 8 seconds
       
-      // Start cycling through slides immediately
+      // Set up interval to advance slides
       const slideInterval = setInterval(() => {
         setCurrentSlideIndex(prevIndex => (prevIndex + 1) % slides.length);
       }, slideDuration * 1000);
@@ -170,7 +157,7 @@ const DynamicBackground = ({
       // Clean up interval on unmount
       return () => clearInterval(slideInterval);
     }
-  }, [character?.id, slideshowStarted]); // Only change when character ID or slideshow status changes
+  }, [character?.id]); // Only change when character ID changes, not on every render
   
   // Render different background types
   const renderBackground = () => {
