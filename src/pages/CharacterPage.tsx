@@ -62,7 +62,8 @@ const CharacterPage = () => {
     isListening, 
     setIsListening, 
     transcript, 
-    setTranscript, 
+    // We're not manually setting transcript anymore as Vapi handles it
+    // setTranscript, 
     audioLevel, 
     setAudioLevel,
     handleReset
@@ -132,7 +133,11 @@ const CharacterPage = () => {
         });
     }, 1000);
     
-    return () => clearTimeout(connectingTimeout);
+    // Clean up function to end the Vapi call when navigating away
+    return () => {
+      clearTimeout(connectingTimeout);
+      vapiService.endVapiCall();
+    };
   }, [characterId, navigate, setCharacter, setMessage, setStatus, setIsListening]);
 
   // Handle tap to talk
@@ -140,55 +145,19 @@ const CharacterPage = () => {
     if (status !== 'active' || !character) return;
     
     if (!isListening) {
-      // Start listening
+      // Start listening - Vapi SDK handles the voice interaction
       setIsListening(true);
       setMessage('Listening...');
       
-      // Simulate receiving transcript after 3 seconds
+      // The Vapi SDK will handle the voice interaction automatically
+      // We just need to update the UI based on the interaction state
+      
+      // After a short delay, show the ready message
+      // In a real implementation, this would be triggered by Vapi events
       setTimeout(() => {
-        const sampleQuestions = [
-          "Tell me about your adventures!",
-          "What's your favorite game?",
-          "Can you tell me a story?",
-          "Do you have any friends?"
-        ];
-        const randomQuestion = sampleQuestions[Math.floor(Math.random() * sampleQuestions.length)];
-        setTranscript(randomQuestion);
         setIsListening(false);
-        
-        // Simulate character responding
-        setTimeout(() => {
-          setMessage(`${character.name} is responding...`);
-          
-          // Call Vapi API with the transcript
-          vapiService.sendMessageToVapi({ 
-            characterId: character.id, 
-            message: randomQuestion 
-          })
-            .then(response => {
-              if (response.success && response.message) {
-                setMessage(response.message);
-              } else {
-                setMessage(`Error: ${response.error}`);
-              }
-              setTranscript('');
-              
-              // Ready for next interaction
-              setTimeout(() => {
-                setMessage(`Tap to talk with ${character.name}`);
-              }, 5000);
-            })
-            .catch(error => {
-              setMessage(`Error: ${error.message}`);
-              setTranscript('');
-              
-              // Ready for next interaction
-              setTimeout(() => {
-                setMessage(`Tap to talk with ${character.name}`);
-              }, 3000);
-            });
-        }, 500);
-      }, 3000);
+        setMessage(`Tap to talk with ${character.name}`);
+      }, 10000); // Just a fallback timeout
     } else {
       // Cancel listening
       setIsListening(false);

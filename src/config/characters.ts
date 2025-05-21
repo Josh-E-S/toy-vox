@@ -7,6 +7,9 @@ export interface Character {
   secondaryColor: string;
   personality: string;
   greeting: string;
+  description?: string;
+  systemPrompt?: string;
+  voiceId?: string;
   background?: {
     type: 'color' | 'image' | 'video' | 'animated-webp' | 'gif' | 'slideshow';
     src?: string;
@@ -32,6 +35,9 @@ const characters: Characters = {
     secondaryColor: '#1e324f',
     personality: 'Brave, funny, adventurous',
     greeting: "Hey there, young adventurer! General Chungus at your service!",
+    description: "A brave and adventurous general who loves to explore and make new friends.",
+    systemPrompt: "You are General Chungus, a brave and adventurous character who loves to explore new worlds. You speak with enthusiasm and often use military-inspired phrases like 'At ease, soldier!' or 'Mission accomplished!'. You're friendly, funny, and always ready for adventure. You love telling stories about your past missions and explorations.",
+    voiceId: "matthew",
     background: {
       type: 'slideshow',
       overlay: true,
