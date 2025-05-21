@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useCharacter } from '../context/CharacterContext';
 
 interface LogoProps {
   size?: 'small' | 'medium' | 'large' | 'Xlarge';
@@ -6,6 +7,8 @@ interface LogoProps {
 }
 
 const Logo = ({ size = 'medium', className = '' }: LogoProps) => {
+  const { handleReset } = useCharacter();
+  
   const sizeClasses = {
     small: 'h-10',
     medium: 'h-16',
@@ -13,8 +16,17 @@ const Logo = ({ size = 'medium', className = '' }: LogoProps) => {
     Xlarge: 'h-56'
   };
 
+  // Handle logo click to reset all states
+  const handleLogoClick = () => {
+    handleReset();
+  };
+
   return (
-    <Link to="/" className={`flex items-center ${className}`}>
+    <Link 
+      to="/" 
+      className={`flex items-center ${className}`}
+      onClick={handleLogoClick}
+    >
       <img 
         src="/assets/logo.png" 
         alt="ToyVox Logo" 

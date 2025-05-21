@@ -213,7 +213,10 @@ const CharacterPage = () => {
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* Dynamic Background */}
-      <DynamicBackground character={character} />
+      <DynamicBackground 
+        key={`bg-${character?.id || 'default'}-${Date.now()}`} 
+        character={character} 
+      />
       
       {/* Main App UI */}
       <motion.div 
