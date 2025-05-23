@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Line Visualizer</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+    }
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  
+  <script>
+    const canvas = document.getElementById('canvas');
+    
+    // Adapt canvas size to window
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const ctx = canvas.getContext("2d");
+    
+    // Audio context and analyzer
+    let context, analyser, source, freqs;
+    
+    // Create an input source from the user media stream
+    function onStream(stream) {
+      context = new AudioContext();
+      analyser = context.createAnalyser();
+      source = context.createMediaStreamSource(stream);
+      source.connect(analyser);
+      
+      // Initialize frequency array
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = 0.8;
+      analyser.minDecibels = -70;
+      analyser.maxDecibels = 0;
+      freqs = new Uint8Array(analyser.frequencyBinCount);
+      
+      // Start visualization
+      requestAnimationFrame(visualize);
+    }
+    
+    // Draw just the horizontal line
+    function visualize() {
+      if (!analyser) return;
+      
+      analyser.getByteFrequencyData(freqs);
+      
+      // Calculate average volume
+      let sum = 0;
+      for (let i = 0; i < freqs.length; i++) {
+        sum += freqs[i];
+      }
+      const average = sum / freqs.length;
+      
+      // Normalize to 0-1 range
+      const volume = average / 255;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Set line style - make it more prominent
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+      
+      // Draw the horizontal line at the bottom third of the screen
+      const lineY = canvas.height * 0.7; // Position at 70% from the top (bottom third)
+      const amplitude = volume * canvas.height * 0.25; // 25% of canvas height max
+      
+      ctx.beginPath();
+      
+      // Draw a straight line with wave effect
+      for (let x = 0; x < canvas.width; x += 2) {
+        // Calculate y position based on volume and position
+        const y = lineY + Math.sin(x * 0.01 + Date.now() * 0.002) * amplitude;
+        
+        if (x === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      
+      ctx.stroke();
+      
+      // Continue animation
+      requestAnimationFrame(visualize);
+    }
+    
+    // Auto-start with system audio
+    async function startSystemAudio() {
+      try {
+        // Use screen capture with system audio
+        const stream = await navigator.mediaDevices.getDisplayMedia({ 
+          video: { width: 1, height: 1 }, // Minimal video to reduce resources
+          audio: true 
+        });
+        
+        // We only need the audio tracks
+        const audioTracks = stream.getAudioTracks();
+        if (audioTracks.length === 0) {
+          console.error('No audio track found in screen capture');
+          return;
+        }
+        
+        // Create a new stream with only audio
+        const audioStream = new MediaStream(audioTracks);
+        onStream(audioStream);
+        
+        // Stop video tracks to save resources
+        stream.getVideoTracks().forEach(track => track.stop());
+      } catch (err) {
+        console.error('Error capturing system audio:', err);
+      }
+    }
+
+    // Start automatically when loaded
+    window.addEventListener('load', startSystemAudio);
+  </script>
+</body>
+</html>

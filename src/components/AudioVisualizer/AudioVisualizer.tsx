@@ -4,6 +4,7 @@ import { Character } from '../../config/characters';
 import { vertexShader } from './shaders/vertexShader';
 import { fragmentShader } from './shaders/fragmentShader';
 import { getCharacterConfig } from './visualizerConfig';
+import { registerSpeechEventHandlers, unregisterSpeechEventHandlers } from '../../services/vapiService';
 
 interface AudioVisualizerProps {
   character?: Character | null;
@@ -19,6 +20,27 @@ const AudioVisualizer = ({ character, audioLevel = 0, className = '' }: AudioVis
   const meshRef = useRef<THREE.Mesh | null>(null);
   const clockRef = useRef<THREE.Clock | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  
+  // Store current audio level from Vapi
+  const currentAudioLevelRef = useRef<number>(0);
+
+  // Register Vapi event handlers for audio visualization
+  useEffect(() => {
+    if (!character) return;
+    
+    // Register handlers to receive audio levels from Vapi
+    registerSpeechEventHandlers({
+      onVolumeLevel: (volume: number) => {
+        // Store the volume level for use in animation
+        currentAudioLevelRef.current = volume;
+      }
+    });
+    
+    return () => {
+      // Cleanup Vapi event handlers
+      unregisterSpeechEventHandlers();
+    };
+  }, [character]);
 
   // Initialize and cleanup Three.js scene
   useEffect(() => {
@@ -87,8 +109,9 @@ const AudioVisualizer = ({ character, audioLevel = 0, className = '' }: AudioVis
       const uniforms = (meshRef.current.material as THREE.ShaderMaterial).uniforms;
       uniforms.u_time.value = clockRef.current.getElapsedTime();
       
-      // Update frequency uniform based on audio level
-      uniforms.u_frequency.value = audioLevel * 100;
+      // Update frequency uniform based on Vapi audio level or fallback to prop
+      const currentLevel = currentAudioLevelRef.current || audioLevel;
+      uniforms.u_frequency.value = currentLevel * 100;
 
       // Add subtle rotation to the mesh
       meshRef.current.rotation.y += 0.001;
@@ -139,16 +162,6 @@ const AudioVisualizer = ({ character, audioLevel = 0, className = '' }: AudioVis
       rendererRef.current?.dispose();
     };
   }, [character]); // Recreate visualizer when character changes
-
-  // Update audio level in real-time
-  useEffect(() => {
-    if (!meshRef.current) return;
-
-    const uniforms = (meshRef.current.material as THREE.ShaderMaterial).uniforms;
-    // Scale the audio level for better visual effect
-    // The multiplier can be adjusted based on your audio input range
-    uniforms.u_frequency.value = audioLevel * 100;
-  }, [audioLevel]);
 
   return (
     <div 

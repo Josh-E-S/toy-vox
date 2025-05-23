@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horizontal Line Visualizer</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+    }
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+    }
+    .listening-text {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 5px 15px;
+      border-radius: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="listeningText" class="listening-text">Listening...</div>
+  
+  <script>
+    const canvas = document.getElementById('canvas');
+    const listeningText = document.getElementById('listeningText');
+    
+    // Adapt canvas size to window
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const ctx = canvas.getContext("2d");
+    
+    // Options for the visualizer - just the horizontal line
+    const opts = {
+      smoothing: 0.7,
+      fft: 11,
+      minDecibels: -70,
+      lineWidth: 3,
+      color: [255, 255, 255], // White line by default
+      glow: 20
+    };
+    
+    // Audio context and analyzer
+    let context, analyser, source, freqs;
+    
+    // Create an input source from the user media stream
+    function onStream(stream) {
+      context = new AudioContext();
+      analyser = context.createAnalyser();
+      source = context.createMediaStreamSource(stream);
+      source.connect(analyser);
+      
+      // Initialize frequency array
+      analyser.fftSize = Math.pow(2, opts.fft);
+      freqs = new Uint8Array(analyser.frequencyBinCount);
+      
+      // Start visualization
+      requestAnimationFrame(visualize);
+      
+      // Show listening text
+      listeningText.style.display = 'block';
+    }
+    
+    // Error handler
+    function onStreamError(e) {
+      console.error('Error accessing audio:', e);
+    }
+    
+    // Draw the horizontal line visualization
+    function drawHorizontalLine() {
+      if (!analyser) return;
+      
+      // Get frequency data
+      analyser.getByteFrequencyData(freqs);
+      
+      // Calculate average volume
+      let sum = 0;
+      for (let i = 0; i < freqs.length; i++) {
+        sum += freqs[i];
+      }
+      const average = sum / freqs.length;
+      
+      // Normalize to 0-1 range
+      const volume = average / 255;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Set line style
+      ctx.lineWidth = opts.lineWidth;
+      ctx.strokeStyle = `rgb(${opts.color[0]}, ${opts.color[1]}, ${opts.color[2]})`;
+      ctx.shadowBlur = opts.glow;
+      ctx.shadowColor = `rgb(${opts.color[0]}, ${opts.color[1]}, ${opts.color[2]})`;
+      
+      // Draw the horizontal line
+      const centerY = canvas.height / 2;
+      const amplitude = volume * canvas.height * 0.4; // 40% of canvas height max
+      
+      ctx.beginPath();
+      
+      // Draw a wavy horizontal line
+      for (let x = 0; x < canvas.width; x += 5) {
+        // Calculate y position based on volume and position
+        const y = centerY + Math.sin(x * 0.01 + Date.now() * 0.002) * amplitude;
+        
+        if (x === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      
+      ctx.stroke();
+    }
+    
+    // Main visualization function
+    function visualize() {
+      if (!analyser) return;
+      
+      // Set analyzer properties
+      analyser.smoothingTimeConstant = opts.smoothing;
+      analyser.minDecibels = opts.minDecibels;
+      analyser.maxDecibels = 0;
+      
+      // Draw the horizontal line
+      drawHorizontalLine();
+      
+      // Continue animation
+      requestAnimationFrame(visualize);
+    }
+    
+    // Auto-start with system audio
+    async function startSystemAudio() {
+      try {
+        // Use screen capture with system audio
+        const stream = await navigator.mediaDevices.getDisplayMedia({ 
+          video: { width: 1, height: 1 }, // Minimal video to reduce resources
+          audio: true 
+        });
+        
+        // We only need the audio tracks
+        const audioTracks = stream.getAudioTracks();
+        if (audioTracks.length === 0) {
+          console.error('No audio track found in screen capture. Make sure to select "Share system audio" when prompted.');
+          return;
+        }
+        
+        // Create a new stream with only audio
+        const audioStream = new MediaStream(audioTracks);
+        onStream(audioStream);
+        
+        // Stop video tracks to save resources
+        stream.getVideoTracks().forEach(track => track.stop());
+      } catch (err) {
+        console.error('Error capturing system audio:', err);
+        
+        // Fallback to microphone
+        try {
+          const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          onStream(micStream);
+        } catch (micErr) {
+          console.error('Error accessing microphone:', micErr);
+        }
+      }
+    }
+
+    // Start automatically when loaded
+    window.addEventListener('load', startSystemAudio);
+  </script>
+</body>
+</html>

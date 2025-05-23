@@ -2,6 +2,10 @@
 import Vapi from "@vapi-ai/web";
 import characters from '../config/characters';
 
+// Event callback types
+type VapiEventCallback = () => void;
+type VapiVolumeCallback = (volume: number) => void;
+
 // Initialize Vapi with API key and assistant ID from .env
 // In Vite, we need to use import.meta.env instead of process.env
 const VAPI_API_KEY = import.meta.env.VITE_VAPI_API_KEY;
@@ -9,6 +13,11 @@ const ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
 
 // Keep track of the Vapi instance
 let vapiInstance: any = null;
+
+// Event callbacks
+let onSpeechStartCallback: VapiEventCallback | null = null;
+let onSpeechEndCallback: VapiEventCallback | null = null;
+let onVolumeLevelCallback: VapiVolumeCallback | null = null;
 
 export interface VapiCallParams {
   characterId: string;
@@ -82,6 +91,22 @@ export const initiateVapiCall = async (params: VapiCallParams): Promise<VapiResp
       vapiInstance.on("message", (message: any) => {
         console.log("Assistant said:", message);
       });
+      
+      // Add speech event listeners for audio visualization
+      vapiInstance.on("speech-start", () => {
+        console.log("Assistant started speaking");
+        if (onSpeechStartCallback) onSpeechStartCallback();
+      });
+      
+      vapiInstance.on("speech-end", () => {
+        console.log("Assistant stopped speaking");
+        if (onSpeechEndCallback) onSpeechEndCallback();
+      });
+      
+      vapiInstance.on("volume-level", (volume: number) => {
+        // console.log(`Assistant volume level: ${volume}`);
+        if (onVolumeLevelCallback) onVolumeLevelCallback(volume);
+      });
     }
     
     // Start the call with your assistant ID
@@ -150,9 +175,37 @@ export const endVapiCall = () => {
   }
 };
 
+/**
+ * Register event handlers for Vapi speech events
+ */
+export const registerSpeechEventHandlers = ({
+  onSpeechStart,
+  onSpeechEnd,
+  onVolumeLevel
+}: {
+  onSpeechStart?: VapiEventCallback;
+  onSpeechEnd?: VapiEventCallback;
+  onVolumeLevel?: VapiVolumeCallback;
+}) => {
+  onSpeechStartCallback = onSpeechStart || null;
+  onSpeechEndCallback = onSpeechEnd || null;
+  onVolumeLevelCallback = onVolumeLevel || null;
+};
+
+/**
+ * Unregister all event handlers
+ */
+export const unregisterSpeechEventHandlers = () => {
+  onSpeechStartCallback = null;
+  onSpeechEndCallback = null;
+  onVolumeLevelCallback = null;
+};
+
 export default {
   initiateVapiCall,
   sendMessageToVapi,
   endVapiCall,
-  audioEffects
+  audioEffects,
+  registerSpeechEventHandlers,
+  unregisterSpeechEventHandlers
 };

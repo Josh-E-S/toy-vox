@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimation, Variants } from 'framer-motion';
 import DynamicBackground from '../components/DynamicBackground';
@@ -6,7 +6,7 @@ import SparkleEffect from '../components/SparkleEffect';
 import AudioVisualizer from '../components/AudioVisualizer';
 import { useCharacter } from '../context/CharacterContext';
 import characters from '../config/characters';
-import vapiService from '../services/vapiService';
+import vapiService, { registerSpeechEventHandlers, unregisterSpeechEventHandlers } from '../services/vapiService';
 
 const CharacterPage = () => {
   // Animation controls
@@ -58,24 +58,41 @@ const CharacterPage = () => {
     handleReset
   } = useCharacter();
 
-  // Simulate audio levels when listening - with smoother transitions
+  // Reference to the audio simulation interval
+  const audioSimulationRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Simulate audio levels when the user is listening (microphone active)
   useEffect(() => {
+    // Clear any existing simulation
+    if (audioSimulationRef.current) {
+      clearInterval(audioSimulationRef.current);
+      audioSimulationRef.current = null;
+    }
+
+    // Only simulate audio when the user is speaking (listening mode active)
     if (isListening) {
       // Use a more stable audio level simulation with less variance
       let currentLevel = 0.3; // Start with a moderate level
       
-      const audioSimulation = setInterval(() => {
+      audioSimulationRef.current = setInterval(() => {
         // Small random adjustment to current level (max ±0.1)
         const adjustment = (Math.random() * 0.2) - 0.1;
         // Ensure level stays between 0.2 and 0.6 for stability
         currentLevel = Math.max(0.2, Math.min(0.6, currentLevel + adjustment));
         setAudioLevel(currentLevel);
       }, 300); // Slower updates (300ms instead of 100ms)
-      
-      return () => clearInterval(audioSimulation);
     } else {
+      // If not listening, set audio level to 0
+      // Note: We don't set it to 0 here anymore since the AudioVisualizer
+      // will now handle the audio levels for the assistant's speech
       setAudioLevel(0);
     }
+    
+    return () => {
+      if (audioSimulationRef.current) {
+        clearInterval(audioSimulationRef.current);
+      }
+    };
   }, [isListening, setAudioLevel]);
 
   // Handle character detection from URL parameter
@@ -161,6 +178,21 @@ const CharacterPage = () => {
     }
   };
 
+  // Register Vapi speech event handlers to update audio level
+  useEffect(() => {
+    if (status === 'active') {
+      registerSpeechEventHandlers({
+        onVolumeLevel: (volume: number) => {
+          setAudioLevel(volume);
+        }
+      });
+    }
+    
+    return () => {
+      unregisterSpeechEventHandlers();
+    };
+  }, [status, setAudioLevel]);
+
   // Start animations when component mounts
   useEffect(() => {
     controls.start('visible');
@@ -180,7 +212,7 @@ const CharacterPage = () => {
       {/* Character Background */}
       <DynamicBackground character={character} />
       
-      {/* Audio Visualizer - shown when character is active */}
+      {/* Original Orb Audio Visualizer - shown when character is active (as placeholder) */}
       {status === 'active' && character && (
         <AudioVisualizer 
           character={character} 
@@ -188,6 +220,7 @@ const CharacterPage = () => {
           className="opacity-80"
         />
       )}
+      
       
       {/* Sparkle Effect - only shown during specific states */}
       <SparkleEffect active={status === 'detecting' || status === 'connecting'} />
