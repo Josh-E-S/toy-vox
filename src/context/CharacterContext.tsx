@@ -12,8 +12,8 @@ interface CharacterContextType {
   setMessage: (message: string) => void;
   isListening: boolean;
   setIsListening: (isListening: boolean) => void;
-  transcript: string;
-  setTranscript: (transcript: string) => void;
+  isTalking: boolean;
+  setIsTalking: (isTalking: boolean) => void;
   audioLevel: number;
   setAudioLevel: (level: number) => void;
   handleReset: () => void;
@@ -26,7 +26,7 @@ export const CharacterProvider = ({ children }: { children: ReactNode }) => {
   const [character, setCharacter] = useState<Character | null>(null);
   const [message, setMessage] = useState<string>('Place a toy on the base to begin');
   const [isListening, setIsListening] = useState<boolean>(false);
-  const [transcript, setTranscript] = useState<string>('');
+  const [isTalking, setIsTalking] = useState<boolean>(false);
   const [audioLevel, setAudioLevel] = useState<number>(0);
 
   const handleReset = () => {
@@ -34,7 +34,7 @@ export const CharacterProvider = ({ children }: { children: ReactNode }) => {
     setCharacter(null);
     setMessage('Place a toy on the base to begin');
     setIsListening(false);
-    setTranscript('');
+    setIsTalking(false);
     setAudioLevel(0);
   };
 
@@ -49,8 +49,8 @@ export const CharacterProvider = ({ children }: { children: ReactNode }) => {
         setMessage,
         isListening,
         setIsListening,
-        transcript,
-        setTranscript,
+        isTalking,
+        setIsTalking,
         audioLevel,
         setAudioLevel,
         handleReset

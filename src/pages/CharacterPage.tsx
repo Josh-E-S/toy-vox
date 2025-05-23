@@ -6,7 +6,7 @@ import SparkleEffect from '../components/SparkleEffect';
 import AudioVisualizer from '../components/AudioVisualizer';
 import { useCharacter } from '../context/CharacterContext';
 import characters from '../config/characters';
-import vapiService, { registerSpeechEventHandlers, unregisterSpeechEventHandlers } from '../services/vapiService';
+import vapiService from '../services/vapiService';
 
 const CharacterPage = () => {
   // Animation controls
@@ -50,9 +50,8 @@ const CharacterPage = () => {
     setMessage, 
     isListening, 
     setIsListening, 
-    transcript, 
-    // We're not manually setting transcript anymore as Vapi handles it
-    // setTranscript, 
+    isTalking,
+    setIsTalking,
     audioLevel, 
     setAudioLevel,
     handleReset
@@ -121,8 +120,20 @@ const CharacterPage = () => {
       setMessage(`Connecting to ${characterData.name}...`);
       vapiService.audioEffects.connect();
       
-      // Call Vapi API
-      vapiService.initiateVapiCall({ characterId })
+      // Call Vapi API with event handlers
+      vapiService.initiateVapiCall({ 
+        characterId,
+        onVolumeLevel: (volume: number) => {
+          setAudioLevel(volume);
+        },
+        onSpeechStart: () => {
+          setIsTalking(true);
+          setIsListening(false);
+        },
+        onSpeechEnd: () => {
+          setIsTalking(false);
+        }
+      })
         .then(response => {
           if (response.success) {
             setCharacter(characterData);
@@ -130,9 +141,8 @@ const CharacterPage = () => {
             setMessage(response.message || characterData.greeting);
             vapiService.audioEffects.magic();
             
-            // Start listening after brief delay
+            // Ready for interaction after brief delay
             setTimeout(() => {
-              setIsListening(true);
               setMessage(`Tap to talk with ${characterData.name}`);
             }, 3000);
           } else {
@@ -151,47 +161,31 @@ const CharacterPage = () => {
       clearTimeout(connectingTimeout);
       vapiService.endVapiCall();
     };
-  }, [characterId, navigate, setCharacter, setMessage, setStatus, setIsListening]);
+  }, [characterId, navigate, setCharacter, setMessage, setStatus, setAudioLevel, setIsTalking]);
 
   // Handle tap to talk
   const handleTapToTalk = () => {
     if (status !== 'active' || !character) return;
     
-    if (!isListening) {
+    if (!isListening && !isTalking) {
       // Start listening - Vapi SDK handles the voice interaction
       setIsListening(true);
       setMessage('Listening...');
       
-      // The Vapi SDK will handle the voice interaction automatically
-      // We just need to update the UI based on the interaction state
-      
-      // After a short delay, show the ready message
-      // In a real implementation, this would be triggered by Vapi events
+      // Fallback timeout to reset listening state
       setTimeout(() => {
-        setIsListening(false);
-        setMessage(`Tap to talk with ${character.name}`);
-      }, 10000); // Just a fallback timeout
-    } else {
+        if (isListening && !isTalking) {
+          setIsListening(false);
+          setMessage(`Tap to talk with ${character.name}`);
+        }
+      }, 10000);
+    } else if (isListening) {
       // Cancel listening
       setIsListening(false);
       setMessage(`Tap to talk with ${character.name}`);
     }
   };
 
-  // Register Vapi speech event handlers to update audio level
-  useEffect(() => {
-    if (status === 'active') {
-      registerSpeechEventHandlers({
-        onVolumeLevel: (volume: number) => {
-          setAudioLevel(volume);
-        }
-      });
-    }
-    
-    return () => {
-      unregisterSpeechEventHandlers();
-    };
-  }, [status, setAudioLevel]);
 
   // Start animations when component mounts
   useEffect(() => {
@@ -344,48 +338,40 @@ const CharacterPage = () => {
                   {character.name}
                 </motion.h2>
                 
-                {/* Character circle - text only version, no colored oval */}
+                {/* Character circle - showing current state */}
                 <div 
                   className="mx-auto mb-6 relative cursor-pointer hover:scale-105 active:scale-95 transition-transform"
                   onClick={handleTapToTalk}
                 >
                   <div 
-                    className="w-48 h-48 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg"
+                    className={`w-48 h-48 rounded-full mx-auto flex items-center justify-center shadow-lg transition-colors duration-300 ${
+                      isTalking 
+                        ? 'bg-blue-500 text-white' 
+                        : isListening 
+                        ? 'bg-green-500 text-white'
+                        : 'bg-white'
+                    }`}
                   >
                     <div 
-                      className="text-xl font-medium"
-                      style={{ color: character?.color || '#4a90e2' }}
+                      className={`text-xl font-medium ${
+                        isTalking || isListening ? 'text-white' : ''
+                      }`}
+                      style={{ 
+                        color: (isTalking || isListening) ? 'white' : (character?.color || '#4a90e2')
+                      }}
                     >
-                      {isListening ? 'Listening...' : 'Tap to Talk'}
+                      {isTalking ? 'Talking...' : isListening ? 'Listening...' : 'Tap to Talk'}
                     </div>
                   </div>
                   
-                  {/* Small dot indicator for listening state */}
-                  {isListening && (
-                    <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-green-500 animate-pulse"></div>
+                  {/* Animated ring for active states */}
+                  {(isListening || isTalking) && (
+                    <div className={`absolute inset-0 w-48 h-48 rounded-full animate-pulse ${
+                      isTalking ? 'ring-4 ring-blue-300' : 'ring-4 ring-green-300'
+                    }`}></div>
                   )}
                 </div>
                 
-                {/* Transcript display */}
-                <AnimatePresence>
-                  {transcript && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                      className="bg-white bg-opacity-10 p-4 rounded-lg text-white mb-6 max-w-sm mx-auto"
-                    >
-                      <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        "{transcript}"
-                      </motion.p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
                 
                 <motion.p 
                   className="text-white text-lg max-w-sm mx-auto"
@@ -415,7 +401,7 @@ const CharacterPage = () => {
             }}
           >
             {status === 'active' && character
-              ? `Character: ${character.name} | Personality: ${character.personality}`
+              ? `${character.name} | ${isTalking ? 'Speaking...' : isListening ? 'Listening...' : 'Ready'}`
               : 'Ready for toy interaction'}
           </motion.p>
         </motion.div>

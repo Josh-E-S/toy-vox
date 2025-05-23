@@ -22,6 +22,9 @@ let onVolumeLevelCallback: VapiVolumeCallback | null = null;
 export interface VapiCallParams {
   characterId: string;
   message?: string;
+  onSpeechStart?: VapiEventCallback;
+  onSpeechEnd?: VapiEventCallback;
+  onVolumeLevel?: VapiVolumeCallback;
 }
 
 export interface VapiResponse {
@@ -51,6 +54,11 @@ export const initiateVapiCall = async (params: VapiCallParams): Promise<VapiResp
         error: `Character with ID ${params.characterId} not found`
       };
     }
+    
+    // Set up callbacks from params
+    if (params.onSpeechStart) onSpeechStartCallback = params.onSpeechStart;
+    if (params.onSpeechEnd) onSpeechEndCallback = params.onSpeechEnd;
+    if (params.onVolumeLevel) onVolumeLevelCallback = params.onVolumeLevel;
     
     // Check if we have the required API key and assistant ID
     if (!VAPI_API_KEY) {
@@ -89,7 +97,8 @@ export const initiateVapiCall = async (params: VapiCallParams): Promise<VapiResp
       });
       
       vapiInstance.on("message", (message: any) => {
-        console.log("Assistant said:", message);
+        // We can add other message handling here if needed in the future
+        console.log("Vapi message:", message.type);
       });
       
       // Add speech event listeners for audio visualization
