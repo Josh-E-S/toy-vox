@@ -6,29 +6,26 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: 18
           cache: 'npm'
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - name: Install dependencies
+      
+      - name: Install Dependencies
         run: npm ci
+      
       - name: Build
         run: npm run build
         env:
@@ -37,18 +34,9 @@ jobs:
           VITE_VAPI_ASSISTANT_ID_SONIC: ${{ secrets.VITE_VAPI_ASSISTANT_ID_SONIC }}
           VITE_VAPI_ASSISTANT_ID_SHADOW: ${{ secrets.VITE_VAPI_ASSISTANT_ID_SHADOW }}
           VITE_VAPI_ASSISTANT_ID_SPONGEBOB: ${{ secrets.VITE_VAPI_ASSISTANT_ID_SPONGEBOB }}
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: './dist'
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+      
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
