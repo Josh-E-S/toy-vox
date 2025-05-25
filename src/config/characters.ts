@@ -1,5 +1,4 @@
 // Character data configuration for ToyVox
-import getAssetPath from '../utils/assetPath';
 
 export interface Character {
   id: string;
@@ -45,9 +44,9 @@ const characters: Characters = {
       transitionDuration: 1.2, // 1.2 second fade transition
       slideDuration: 2.4, // Each slide shows for 8 seconds
       slides: [
-        { src: getAssetPath('assets/characters/chungy001/background.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/chungy001/background2.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/chungy001/background3.gif'), type: 'gif' }
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/chungus/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/chungus/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/chungus/background3.gif', type: 'gif' }
       ]
     }
   },
@@ -64,9 +63,9 @@ const characters: Characters = {
       transitionDuration: 1.2, // 1.2 second fade transition
       slideDuration: 2.4, // Each slide shows for 8 seconds
       slides: [
-        { src: getAssetPath('assets/characters/sonic001/background.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/sonic001/background2.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/sonic001/background3.gif'), type: 'gif' }
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/sonic/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/sonic/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/sonic/background3.gif', type: 'gif' }
       ]
     }
   },
@@ -83,10 +82,10 @@ const characters: Characters = {
       transitionDuration: 1.2, // 1.2 second fade transition
       slideDuration: 2.4, // Each slide shows for 8 seconds
       slides: [
-        { src: getAssetPath('assets/characters/shadow001/background.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/shadow001/background2.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/shadow001/background3.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/shadow001/background4.gif'), type: 'gif' }
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/shadow/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/shadow/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/shadow/background3.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/shadow/background4.gif', type: 'gif' }
       ]
     }
   },
@@ -103,9 +102,9 @@ const characters: Characters = {
       transitionDuration: 1.2, // 1.2 second fade transition
       slideDuration: 2.4, // Each slide shows for 8 seconds
       slides: [
-        { src: getAssetPath('assets/characters/sponge001/background.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/sponge001/background2.gif'), type: 'gif' },
-        { src: getAssetPath('assets/characters/sponge001/background3.gif'), type: 'gif' }
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/spongebob/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/spongebob/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/spongebob/background3.gif', type: 'gif' }
       ]
     }
   }

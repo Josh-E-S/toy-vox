@@ -73,43 +73,43 @@ const HomePage = () => {
           {/* Waiting for toy state */}
           <div className="text-center">
             <div className="animate-pulse mb-6">
-              <div className="w-96 h-96 bg-white bg-opacity-20 rounded-full mx-auto flex items-center justify-center">
-                <div className="w-60 h-60 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
-                  <div className="w-48 h-48 bg-white rounded-full flex items-center justify-center">
-                    <div className="text-gray-800 text-2xl font-medium">Place Toy Here</div>
+              <div className="w-72 h-72 sm:w-96 sm:h-96 bg-white bg-opacity-20 rounded-full mx-auto flex items-center justify-center">
+                <div className="w-48 h-48 sm:w-60 sm:h-60 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                  <div className="w-36 h-36 sm:w-48 sm:h-48 bg-white rounded-full flex items-center justify-center">
+                    <div className="text-gray-800 text-lg sm:text-2xl font-medium">Place Toy Here</div>
                   </div>
                 </div>
               </div>
             </div>
-            <p className="text-white text-2xl">{currentMessage}</p>
+            <p className="text-white text-lg sm:text-2xl px-4">{currentMessage}</p>
           </div>
         </div>
         
         {/* Temporary character navigation links for testing */}
-        <div className="w-full py-8 flex flex-col items-center">
-          <h3 className="text-white text-xl mb-4">Quick Test Links:</h3>
-          <div className="flex flex-wrap justify-center gap-4">
+        <div className="w-full py-8 flex flex-col items-center px-4">
+          <h3 className="text-white text-lg sm:text-xl mb-4 text-center">Quick Test Links:</h3>
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             <Link 
               to="/character/chungy001" 
-              className="px-4 py-2 bg-[#2c4672] text-white rounded-full hover:opacity-80 transition-opacity"
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-[#2c4672] text-white text-sm sm:text-base rounded-full hover:opacity-80 transition-opacity"
             >
               General Chungus
             </Link>
             <Link 
               to="/character/sonic001" 
-              className="px-4 py-2 bg-[#0066cc] text-white rounded-full hover:opacity-80 transition-opacity"
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-[#0066cc] text-white text-sm sm:text-base rounded-full hover:opacity-80 transition-opacity"
             >
               Sonic
             </Link>
             <Link 
               to="/character/shadow001" 
-              className="px-4 py-2 bg-[#990000] text-white rounded-full hover:opacity-80 transition-opacity"
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-[#990000] text-white text-sm sm:text-base rounded-full hover:opacity-80 transition-opacity"
             >
               Shadow
             </Link>
             <Link 
               to="/character/sponge001" 
-              className="px-4 py-2 bg-[#ffcc00] text-black rounded-full hover:opacity-80 transition-opacity"
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-[#ffcc00] text-black text-sm sm:text-base rounded-full hover:opacity-80 transition-opacity"
             >
               SpongeBob
             </Link>
@@ -117,8 +117,8 @@ const HomePage = () => {
         </div>
         
         {/* Bottom status area - always visible */}
-        <div className="w-full py-4">
-          <p className="text-white text-center text-2xl opacity-60">
+        <div className="w-full py-4 px-4">
+          <p className="text-white text-center text-lg sm:text-2xl opacity-60">
             Ready for toy interaction
           </p>
         </div>

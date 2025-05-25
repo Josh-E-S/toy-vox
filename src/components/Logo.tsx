@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import getAssetPath from '../utils/assetPath';
 
 interface LogoProps {
   size?: 'small' | 'medium' | 'large' | 'Xlarge';
@@ -17,7 +16,7 @@ const Logo = ({ size = 'medium', className = '' }: LogoProps) => {
   return (
     <Link to="/" className={`flex items-center ${className}`}>
       <img 
-        src={getAssetPath('assets/logo.png')} 
+        src="https://storage.googleapis.com/toy-vox-public-assets/public-assets/logo.png" 
         alt="ToyVox Logo" 
         className={`${sizeClasses[size]} object-contain`}
       />

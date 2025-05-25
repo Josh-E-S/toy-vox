@@ -158,7 +158,7 @@ const CharacterPage = () => {
         
         {/* Main content area */}
         <motion.div 
-          className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto"
+          className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto px-4"
           variants={itemVariants}
         >
           <AnimatePresence mode="wait">
@@ -184,7 +184,7 @@ const CharacterPage = () => {
                   }}
                 >
                   <motion.div 
-                    className="w-40 h-40 mx-auto relative"
+                    className="w-32 h-32 sm:w-40 sm:h-40 mx-auto relative"
                     animate={{
                       scale: [1, 1.05, 1],
                       boxShadow: [
@@ -212,7 +212,7 @@ const CharacterPage = () => {
                   </motion.div>
                 </motion.div>
                 <motion.p 
-                  className="text-white text-xl"
+                  className="text-white text-lg sm:text-xl text-center px-4"
                   animate={{ 
                     opacity: [0.7, 1, 0.7] 
                   }}
@@ -236,7 +236,7 @@ const CharacterPage = () => {
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
               >
                 <motion.h2 
-                  className="text-white text-3xl font-bold mb-6"
+                  className="text-white text-2xl sm:text-3xl font-bold mb-6 text-center"
                   initial={{ y: -20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -245,7 +245,7 @@ const CharacterPage = () => {
                 </motion.h2>
                 
                 {/* Multi-ring status circle */}
-                <div className="relative w-40 h-40 mx-auto mb-6">
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-6">
                   {/* Outer ring */}
                   <div className={`absolute inset-0 rounded-full transition-colors duration-300 ${
                     audioLevel > 0 
@@ -273,7 +273,7 @@ const CharacterPage = () => {
                       ? 'bg-gradient-to-br from-blue-700 to-purple-800 opacity-60' 
                       : 'bg-gradient-to-br from-green-700 to-emerald-800 opacity-50'
                   }`}>
-                    <div className="text-white text-lg font-medium">
+                    <div className="text-white text-sm sm:text-lg font-medium px-2 text-center">
                       {audioLevel > 0 ? 'Speaking' : 'Listening'}
                     </div>
                   </div>

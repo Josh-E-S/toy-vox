@@ -6,19 +6,17 @@ import characters from '../config/characters';
 type VapiEventCallback = () => void;
 type VapiVolumeCallback = (volume: number) => void;
 
-// Import environment configuration
-import ENV from '../config/env';
-
-// Initialize Vapi with API key from our configuration
-const VAPI_API_KEY = ENV.VAPI_API_KEY;
+// Initialize Vapi with API key and assistant IDs from .env
+// In Vite, we need to use import.meta.env instead of process.env
+const VAPI_API_KEY = import.meta.env.VITE_VAPI_API_KEY;
 
 // Character-specific assistant ID mapping
 const getAssistantIdForCharacter = (characterId: string): string | null => {
   const assistantIds: Record<string, string> = {
-    'chungy001': ENV.VAPI_ASSISTANT_ID_CHUNGUS,
-    'sonic001': ENV.VAPI_ASSISTANT_ID_SONIC,
-    'shadow001': ENV.VAPI_ASSISTANT_ID_SHADOW,
-    'sponge001': ENV.VAPI_ASSISTANT_ID_SPONGEBOB
+    'chungy001': import.meta.env.VITE_VAPI_ASSISTANT_ID_CHUNGUS,
+    'sonic001': import.meta.env.VITE_VAPI_ASSISTANT_ID_SONIC,
+    'shadow001': import.meta.env.VITE_VAPI_ASSISTANT_ID_SHADOW,
+    'sponge001': import.meta.env.VITE_VAPI_ASSISTANT_ID_SPONGEBOB
   };
   
   return assistantIds[characterId] || null;

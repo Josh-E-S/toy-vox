@@ -30,10 +30,10 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
           >
-            <div className="bg-black bg-opacity-40 backdrop-blur-md p-6 rounded-xl text-white w-96 max-h-[80vh] overflow-y-auto">
+            <div className="bg-black bg-opacity-40 backdrop-blur-md p-4 sm:p-6 rounded-xl text-white w-[90vw] max-w-md sm:w-96 max-h-[80vh] overflow-y-auto mx-4">
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold">Orb Settings</h2>
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-bold">Orb Settings</h2>
                 <button
                   onClick={onClose}
                   className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors"
@@ -43,10 +43,10 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               </div>
 
               {/* Settings */}
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {/* Intensity */}
                 <div>
-                  <label className="block mb-2 text-sm font-medium">
+                  <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium">
                     Intensity: {settings.intensity.toFixed(1)}x
                   </label>
                   <input
@@ -58,7 +58,7 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                     onChange={(e) => updateSetting('intensity', parseFloat(e.target.value))}
                     className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
                   />
-                  <div className="text-xs text-gray-400 mt-1">
+                  <div className="text-[11px] sm:text-xs text-gray-400 mt-1">
                     How aggressively the orb responds to audio
                   </div>
                 </div>
@@ -142,13 +142,13 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                 {/* Reset Button */}
                 <button
                   onClick={resetToDefaults}
-                  className="w-full p-3 bg-red-600 bg-opacity-50 hover:bg-opacity-70 rounded-lg transition-colors font-medium"
+                  className="w-full p-2 sm:p-3 bg-red-600 bg-opacity-50 hover:bg-opacity-70 rounded-lg transition-colors font-medium text-sm sm:text-base"
                 >
                   Reset to Defaults
                 </button>
               </div>
 
-              <div className="mt-4 text-xs text-gray-400 text-center">
+              <div className="mt-3 sm:mt-4 text-[11px] sm:text-xs text-gray-400 text-center">
                 Changes apply instantly to the orb behind this modal
               </div>
             </div>
