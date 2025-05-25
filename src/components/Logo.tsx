@@ -16,7 +16,7 @@ const Logo = ({ size = 'medium', className = '' }: LogoProps) => {
   return (
     <Link to="/" className={`flex items-center ${className}`}>
       <img 
-        src="/assets/logo.png" 
+        src="./assets/logo.png" 
         alt="ToyVox Logo" 
         className={`${sizeClasses[size]} object-contain`}
       />
