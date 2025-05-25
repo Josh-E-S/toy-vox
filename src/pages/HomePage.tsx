@@ -68,25 +68,8 @@ const HomePage = () => {
           </div>
         </div>
         
-        {/* Center content - positioned higher */}
-        <div className="flex-1 flex items-start justify-center w-full mt-10">
-          {/* Waiting for toy state */}
-          <div className="text-center">
-            <div className="animate-pulse mb-6">
-              <div className="w-72 h-72 sm:w-96 sm:h-96 bg-white bg-opacity-20 rounded-full mx-auto flex items-center justify-center">
-                <div className="w-48 h-48 sm:w-60 sm:h-60 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
-                  <div className="w-36 h-36 sm:w-48 sm:h-48 bg-white rounded-full flex items-center justify-center">
-                    <div className="text-gray-800 text-lg sm:text-2xl font-medium">Place Toy Here</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p className="text-white text-lg sm:text-2xl px-4">{currentMessage}</p>
-          </div>
-        </div>
-        
-        {/* Temporary character navigation links for testing */}
-        <div className="w-full py-8 flex flex-col items-center px-4">
+        {/* Temporary character navigation links for testing - moved up for mobile visibility */}
+        <div className="w-full py-6 flex flex-col items-center px-4">
           <h3 className="text-white text-lg sm:text-xl mb-4 text-center">Quick Test Links:</h3>
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             <Link 
@@ -113,6 +96,23 @@ const HomePage = () => {
             >
               SpongeBob
             </Link>
+          </div>
+        </div>
+
+        {/* Center content - positioned higher */}
+        <div className="flex-1 flex items-start justify-center w-full mt-6">
+          {/* Waiting for toy state */}
+          <div className="text-center">
+            <div className="animate-pulse mb-6">
+              <div className="w-64 h-64 sm:w-96 sm:h-96 bg-white bg-opacity-20 rounded-full mx-auto flex items-center justify-center">
+                <div className="w-40 h-40 sm:w-60 sm:h-60 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                  <div className="w-28 h-28 sm:w-48 sm:h-48 bg-white rounded-full flex items-center justify-center">
+                    <div className="text-gray-800 text-base sm:text-2xl font-medium">Place Toy Here</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="text-white text-base sm:text-2xl px-4">{currentMessage}</p>
           </div>
         </div>
         
