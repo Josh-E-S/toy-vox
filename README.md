@@ -2,6 +2,12 @@
 
 A React-based web application for the Vapi Build Challenge that enables NFC-activated character voice interactions.
 
+## Live Demo
+
+Try the application at: [https://josh-e-s.github.io/toy-vox/](https://josh-e-s.github.io/toy-vox/)
+
+Last updated: May 25, 2025 - 10:38 AM PST
+
 ## Overview
 
 ToyVox is a minimalist but functional prototype that demonstrates NFC-activated character voice interactions. The application features:
