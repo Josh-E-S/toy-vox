@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DynamicBackground from '../components/DynamicBackground';
 import characters from '../config/characters';
 
-const DemoPage = () => {
+const SettingsPage = () => {
   const [bgType] = useState<'particles'>('particles');
   const [intensity, setIntensity] = useState<'low' | 'medium' | 'high'>('medium');
   const [characterIndex, setCharacterIndex] = useState(0);
@@ -29,7 +29,7 @@ const DemoPage = () => {
         
         <div className="flex-1 flex items-center justify-center">
           <div className="bg-black bg-opacity-30 backdrop-blur-md p-6 rounded-xl text-white max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Background Settings</h2>
+            <h2 className="text-2xl font-bold mb-4">App Settings</h2>
             
             <div className="mb-4">
               <label className="block mb-2">Background Type</label>
@@ -85,9 +85,8 @@ const DemoPage = () => {
             </div>
             
             <p className="mt-6 text-sm opacity-70">
-              This showcase demonstrates different background options for the ToyVox app.
-              In the production version, backgrounds will automatically change based on the
-              character detected by the NFC reader.
+              Adjust the app settings to customize your ToyVox experience.
+              Changes will apply to all characters and interactions.
             </p>
           </div>
         </div>
@@ -96,4 +95,4 @@ const DemoPage = () => {
   );
 };
 
-export default DemoPage;
+export default SettingsPage;

@@ -53,8 +53,7 @@ const CharacterPage = () => {
     isTalking,
     setIsTalking,
     audioLevel, 
-    setAudioLevel,
-    handleReset
+    setAudioLevel
   } = useCharacter();
 
   // Only use Vapi volume levels for visualizer - no simulation
@@ -179,21 +178,7 @@ const CharacterPage = () => {
           variants={itemVariants}
         >
           <div className="text-white text-lg font-semibold opacity-0">Spacer</div>
-          <AnimatePresence>
-            {status !== 'waiting' && (
-              <motion.button 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleReset}
-                className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm"
-              >
-                Reset
-              </motion.button>
-            )}
-          </AnimatePresence>
+          {/* Settings button moved to MainLayout */}
         </motion.div>
         
         {/* Main content area */}
