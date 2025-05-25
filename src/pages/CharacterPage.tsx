@@ -57,42 +57,7 @@ const CharacterPage = () => {
     handleReset
   } = useCharacter();
 
-  // Reference to the audio simulation interval
-  const audioSimulationRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Simulate audio levels when the user is listening (microphone active)
-  useEffect(() => {
-    // Clear any existing simulation
-    if (audioSimulationRef.current) {
-      clearInterval(audioSimulationRef.current);
-      audioSimulationRef.current = null;
-    }
-
-    // Only simulate audio when the user is speaking (listening mode active)
-    if (isListening) {
-      // Use a more stable audio level simulation with less variance
-      let currentLevel = 0.3; // Start with a moderate level
-      
-      audioSimulationRef.current = setInterval(() => {
-        // Small random adjustment to current level (max ±0.1)
-        const adjustment = (Math.random() * 0.2) - 0.1;
-        // Ensure level stays between 0.2 and 0.6 for stability
-        currentLevel = Math.max(0.2, Math.min(0.6, currentLevel + adjustment));
-        setAudioLevel(currentLevel);
-      }, 300); // Slower updates (300ms instead of 100ms)
-    } else {
-      // If not listening, set audio level to 0
-      // Note: We don't set it to 0 here anymore since the AudioVisualizer
-      // will now handle the audio levels for the assistant's speech
-      setAudioLevel(0);
-    }
-    
-    return () => {
-      if (audioSimulationRef.current) {
-        clearInterval(audioSimulationRef.current);
-      }
-    };
-  }, [isListening, setAudioLevel]);
+  // Only use Vapi volume levels for visualizer - no simulation
 
   // Handle character detection from URL parameter
   useEffect(() => {
@@ -124,6 +89,7 @@ const CharacterPage = () => {
       vapiService.initiateVapiCall({ 
         characterId,
         onVolumeLevel: (volume: number) => {
+          console.log("🎵 Vapi volume level:", volume);
           setAudioLevel(volume);
         },
         onSpeechStart: () => {
@@ -132,6 +98,8 @@ const CharacterPage = () => {
         },
         onSpeechEnd: () => {
           setIsTalking(false);
+          // When assistant stops talking, go back to listening for user input
+          setIsListening(true);
         }
       })
         .then(response => {
@@ -167,23 +135,14 @@ const CharacterPage = () => {
   const handleTapToTalk = () => {
     if (status !== 'active' || !character) return;
     
+    // Only allow starting conversation when not already in progress
     if (!isListening && !isTalking) {
       // Start listening - Vapi SDK handles the voice interaction
       setIsListening(true);
-      setMessage('Listening...');
-      
-      // Fallback timeout to reset listening state
-      setTimeout(() => {
-        if (isListening && !isTalking) {
-          setIsListening(false);
-          setMessage(`Tap to talk with ${character.name}`);
-        }
-      }, 10000);
-    } else if (isListening) {
-      // Cancel listening
-      setIsListening(false);
-      setMessage(`Tap to talk with ${character.name}`);
+      setMessage('Listening for your voice...');
     }
+    // If already listening or talking, clicking doesn't do anything
+    // The natural flow is: Listening -> Talking -> back to Listening
   };
 
 
@@ -364,12 +323,7 @@ const CharacterPage = () => {
                     </div>
                   </div>
                   
-                  {/* Animated ring for active states */}
-                  {(isListening || isTalking) && (
-                    <div className={`absolute inset-0 w-48 h-48 rounded-full animate-pulse ${
-                      isTalking ? 'ring-4 ring-blue-300' : 'ring-4 ring-green-300'
-                    }`}></div>
-                  )}
+                  {/* Using only the orb visualizer for animation, no explicit rings */}
                 </div>
                 
                 

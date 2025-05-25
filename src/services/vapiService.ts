@@ -113,8 +113,13 @@ export const initiateVapiCall = async (params: VapiCallParams): Promise<VapiResp
       });
       
       vapiInstance.on("volume-level", (volume: number) => {
-        // console.log(`Assistant volume level: ${volume}`);
-        if (onVolumeLevelCallback) onVolumeLevelCallback(volume);
+        console.log("🎵 Vapi service received volume level:", volume);
+        if (onVolumeLevelCallback) {
+          console.log("🎵 Calling volume callback with:", volume);
+          onVolumeLevelCallback(volume);
+        } else {
+          console.log("❌ No volume callback registered");
+        }
       });
     }
     

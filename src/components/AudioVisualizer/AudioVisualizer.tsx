@@ -95,6 +95,11 @@ const AudioVisualizer = ({ character, audioLevel = 0, className = '' }: AudioVis
       // Update frequency uniform based on Vapi audio level or fallback to prop
       const currentLevel = currentAudioLevelRef.current || audioLevel;
       uniforms.u_frequency.value = currentLevel * 100;
+      
+      // Debug logging
+      if (currentLevel > 0 && Math.random() < 0.1) {
+        console.log("🎨 Visualizer level:", currentLevel, "Scaled:", currentLevel * 100);
+      }
 
       // Add subtle rotation to the mesh
       meshRef.current.rotation.y += 0.001;
