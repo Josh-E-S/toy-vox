@@ -12,7 +12,11 @@ interface AudioVisualizerProps {
   className?: string;
 }
 
-const AudioVisualizer = ({ character, audioLevel = 0, className = '' }: AudioVisualizerProps) => {
+const AudioVisualizer = ({ 
+  character, 
+  audioLevel = 0, 
+  className = ''
+}: AudioVisualizerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);

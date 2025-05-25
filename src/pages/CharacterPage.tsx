@@ -109,9 +109,10 @@ const CharacterPage = () => {
             setMessage(response.message || characterData.greeting);
             vapiService.audioEffects.magic();
             
-            // Ready for interaction after brief delay
+            // Start listening immediately after connection
             setTimeout(() => {
-              setMessage(`Tap to talk with ${characterData.name}`);
+              setIsListening(true);
+              setMessage(`Listening for your voice...`);
             }, 3000);
           } else {
             setMessage(`Error: ${response.error}`);
@@ -130,20 +131,6 @@ const CharacterPage = () => {
       vapiService.endVapiCall();
     };
   }, [characterId, navigate, setCharacter, setMessage, setStatus, setAudioLevel, setIsTalking]);
-
-  // Handle tap to talk
-  const handleTapToTalk = () => {
-    if (status !== 'active' || !character) return;
-    
-    // Only allow starting conversation when not already in progress
-    if (!isListening && !isTalking) {
-      // Start listening - Vapi SDK handles the voice interaction
-      setIsListening(true);
-      setMessage('Listening for your voice...');
-    }
-    // If already listening or talking, clicking doesn't do anything
-    // The natural flow is: Listening -> Talking -> back to Listening
-  };
 
 
   // Start animations when component mounts
@@ -300,7 +287,6 @@ const CharacterPage = () => {
                 {/* Character circle - showing current state */}
                 <div 
                   className="mx-auto mb-6 relative cursor-pointer hover:scale-105 active:scale-95 transition-transform"
-                  onClick={handleTapToTalk}
                 >
                   <div 
                     className={`w-48 h-48 rounded-full mx-auto flex items-center justify-center shadow-lg transition-colors duration-300 ${
@@ -319,7 +305,7 @@ const CharacterPage = () => {
                         color: (isTalking || isListening) ? 'white' : (character?.color || '#4a90e2')
                       }}
                     >
-                      {isTalking ? 'Talking...' : isListening ? 'Listening...' : 'Tap to Talk'}
+                      {isTalking ? 'Talking...' : isListening ? 'Listening...' : 'Ready'}
                     </div>
                   </div>
                   
