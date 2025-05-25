@@ -6,10 +6,23 @@ import characters from '../config/characters';
 type VapiEventCallback = () => void;
 type VapiVolumeCallback = (volume: number) => void;
 
-// Initialize Vapi with API key and assistant ID from .env
-// In Vite, we need to use import.meta.env instead of process.env
-const VAPI_API_KEY = import.meta.env.VITE_VAPI_API_KEY;
-const ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
+// Import environment configuration
+import ENV from '../config/env';
+
+// Initialize Vapi with API key from our configuration
+const VAPI_API_KEY = ENV.VAPI_API_KEY;
+
+// Character-specific assistant ID mapping
+const getAssistantIdForCharacter = (characterId: string): string | null => {
+  const assistantIds: Record<string, string> = {
+    'chungy001': ENV.VAPI_ASSISTANT_ID_CHUNGUS,
+    'sonic001': ENV.VAPI_ASSISTANT_ID_SONIC,
+    'shadow001': ENV.VAPI_ASSISTANT_ID_SHADOW,
+    'sponge001': ENV.VAPI_ASSISTANT_ID_SPONGEBOB
+  };
+  
+  return assistantIds[characterId] || null;
+};
 
 // Keep track of the Vapi instance
 let vapiInstance: any = null;
@@ -55,6 +68,9 @@ export const initiateVapiCall = async (params: VapiCallParams): Promise<VapiResp
       };
     }
     
+    // Get character-specific assistant ID
+    const assistantId = getAssistantIdForCharacter(params.characterId);
+    
     // Set up callbacks from params
     if (params.onSpeechStart) onSpeechStartCallback = params.onSpeechStart;
     if (params.onSpeechEnd) onSpeechEndCallback = params.onSpeechEnd;
@@ -68,10 +84,10 @@ export const initiateVapiCall = async (params: VapiCallParams): Promise<VapiResp
       };
     }
     
-    if (!ASSISTANT_ID) {
+    if (!assistantId) {
       return {
         success: false,
-        error: "Vapi assistant ID is missing in .env file"
+        error: `Vapi assistant ID for character ${params.characterId} is missing in .env file`
       };
     }
     
@@ -123,8 +139,8 @@ export const initiateVapiCall = async (params: VapiCallParams): Promise<VapiResp
       });
     }
     
-    // Start the call with your assistant ID
-    vapiInstance.start(ASSISTANT_ID);
+    // Start the call with character-specific assistant ID
+    vapiInstance.start(assistantId);
     
     return {
       success: true,
