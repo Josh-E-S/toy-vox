@@ -4,10 +4,13 @@ import DynamicBackground from '../components/DynamicBackground';
 import { useCharacter } from '../context/CharacterContext';
 import Logo from '../components/Logo';
 import MainLayout from '../layouts/MainLayout';
+import { FiSettings } from 'react-icons/fi';
+import SettingsModal from '../components/SettingsModal';
 
 const HomePage = () => {
   const { message: contextMessage } = useCharacter();
   const [currentMessage, setCurrentMessage] = useState(contextMessage);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
   // Array of engaging phrases to cycle through
   const engagingPhrases = [
@@ -46,10 +49,21 @@ const HomePage = () => {
     >
       {/* Main App UI */}
       <div className="flex flex-col items-center min-h-screen p-4">
-        {/* Top spacer */}
+        {/* Top spacer with settings button */}
         <div className="flex-none w-full py-5">
+          {/* Settings button - top right */}
+          <div className="w-full flex justify-end mb-4">
+            <button 
+              onClick={() => setIsSettingsOpen(true)} 
+              className="mr-4 p-3 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-300 backdrop-blur-sm text-white shadow-lg"
+              aria-label="Settings"
+            >
+              <FiSettings size={24} />
+            </button>
+          </div>
+          
           {/* Logo section */}
-          <div className="w-full flex justify-center items-center mt-10">
+          <div className="w-full flex justify-center items-center mt-4">
             <Logo size="Xlarge" className="drop-shadow-lg" />
           </div>
         </div>
@@ -108,6 +122,12 @@ const HomePage = () => {
             Ready for toy interaction
           </p>
         </div>
+
+        {/* Settings Modal */}
+        <SettingsModal 
+          isOpen={isSettingsOpen} 
+          onClose={() => setIsSettingsOpen(false)} 
+        />
       </div>
     </MainLayout>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimation, Variants } from 'framer-motion';
 import DynamicBackground from '../components/DynamicBackground';
@@ -269,33 +269,6 @@ const CharacterPage = () => {
                   {character.name}
                 </motion.h2>
                 
-                {/* Character circle - showing current state */}
-                <div 
-                  className="mx-auto mb-6 relative cursor-pointer hover:scale-105 active:scale-95 transition-transform"
-                >
-                  <div 
-                    className={`w-48 h-48 rounded-full mx-auto flex items-center justify-center shadow-lg transition-colors duration-300 ${
-                      isTalking 
-                        ? 'bg-blue-500 text-white' 
-                        : isListening 
-                        ? 'bg-green-500 text-white'
-                        : 'bg-white'
-                    }`}
-                  >
-                    <div 
-                      className={`text-xl font-medium ${
-                        isTalking || isListening ? 'text-white' : ''
-                      }`}
-                      style={{ 
-                        color: (isTalking || isListening) ? 'white' : (character?.color || '#4a90e2')
-                      }}
-                    >
-                      {isTalking ? 'Talking...' : isListening ? 'Listening...' : 'Ready'}
-                    </div>
-                  </div>
-                  
-                  {/* Using only the orb visualizer for animation, no explicit rings */}
-                </div>
                 
                 
                 <motion.p 

@@ -6,7 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Start development server**: `npm run dev`
 - **Build for production**: `npm run build` (runs TypeScript compilation then Vite build)
-- **Lint code**: `npm run lint` (ESLint with auto-fix)
 - **Preview production build**: `npm run preview`
 
 ## Architecture Overview
@@ -56,7 +55,7 @@ The `CharacterContext` provides global state for:
 - **Build**: Vite + TypeScript with path aliases (`@/*` → `./src/*`)
 
 ### File Organization
-- `pages/`: Route components (HomePage, CharacterPage, DemoPage)
+- `pages/`: Route components (HomePage, CharacterPage, SettingsPage)
 - `components/`: Reusable UI components and visualizers
 - `context/`: React context providers for global state
 - `services/`: External API integrations (Vapi)

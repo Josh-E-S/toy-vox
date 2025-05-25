@@ -5,6 +5,7 @@ import { vertexShader } from './shaders/vertexShader';
 import { fragmentShader } from './shaders/fragmentShader';
 import { getCharacterConfig } from './visualizerConfig';
 import { registerSpeechEventHandlers, unregisterSpeechEventHandlers } from '../../services/vapiService';
+import { useVisualizerSettings } from '../../context/VisualizerSettingsContext';
 
 interface AudioVisualizerProps {
   character?: Character | null;
@@ -17,6 +18,7 @@ const AudioVisualizer = ({
   audioLevel = 0, 
   className = ''
 }: AudioVisualizerProps) => {
+  const { settings } = useVisualizerSettings();
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -50,8 +52,8 @@ const AudioVisualizer = ({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Get config for current character
-    const config = getCharacterConfig(character);
+    // Get config for current character with user settings
+    const config = getCharacterConfig(character, settings);
 
     // Initialize Three.js components
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -88,6 +90,9 @@ const AudioVisualizer = ({
       vertexShader,
       fragmentShader
     });
+    
+    // Set line width for wireframe mode
+    renderer.getContext().lineWidth(settings.wireframeThickness);
 
     // Create geometry and mesh
     const geometry = new THREE.IcosahedronGeometry(config.size, config.detail);
@@ -115,7 +120,7 @@ const AudioVisualizer = ({
       
       // Update frequency uniform based on Vapi audio level or fallback to prop
       const currentLevel = currentAudioLevelRef.current || audioLevel;
-      uniforms.u_frequency.value = currentLevel * 100;
+      uniforms.u_frequency.value = currentLevel * settings.sensitivity;
       
       // Debug logging
       if (currentLevel > 0 && Math.random() < 0.01) {
@@ -170,7 +175,7 @@ const AudioVisualizer = ({
 
       rendererRef.current?.dispose();
     };
-  }, [character]); // Recreate visualizer when character changes
+  }, [character, settings]); // Recreate visualizer when character or settings change
 
   return (
     <div 
