@@ -6,6 +6,7 @@ import Logo from '../components/Logo';
 import MainLayout from '../layouts/MainLayout';
 import { FiSettings } from 'react-icons/fi';
 import SettingsModal from '../components/SettingsModal';
+import vapiService from '../services/vapiService';
 
 const HomePage = () => {
   const { message: contextMessage } = useCharacter();
@@ -25,6 +26,12 @@ const HomePage = () => {
     'Connect with your toys in a whole new way'
   ];
   
+  // End any active Vapi calls when returning to home page
+  useEffect(() => {
+    // End call when returning to home to reset state
+    vapiService.endVapiCall();
+  }, []);
+
   // Cycle through phrases every 5 seconds
   useEffect(() => {
     let phraseIndex = 0;

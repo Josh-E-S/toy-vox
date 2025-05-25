@@ -204,6 +204,72 @@ export const endVapiCall = () => {
 };
 
 /**
+ * Check if Vapi is currently in a call
+ */
+export const isVapiCallActive = () => {
+  return vapiInstance && vapiInstance.getCallActive ? vapiInstance.getCallActive() : false;
+};
+
+/**
+ * Switch to a different assistant without ending the call
+ * This helps maintain microphone permissions on mobile
+ */
+export const switchAssistant = async (params: VapiCallParams): Promise<VapiResponse> => {
+  try {
+    const character = characters[params.characterId];
+    
+    if (!character) {
+      return {
+        success: false,
+        error: `Character with ID ${params.characterId} not found`
+      };
+    }
+    
+    const assistantId = getAssistantIdForCharacter(params.characterId);
+    
+    if (!assistantId) {
+      return {
+        success: false,
+        error: `Vapi assistant ID for character ${params.characterId} is missing in .env file`
+      };
+    }
+
+    // Set up callbacks from params
+    if (params.onSpeechStart) onSpeechStartCallback = params.onSpeechStart;
+    if (params.onSpeechEnd) onSpeechEndCallback = params.onSpeechEnd;
+    if (params.onVolumeLevel) onVolumeLevelCallback = params.onVolumeLevel;
+    
+    // If we have an active call, try to switch assistant instead of starting new call
+    if (vapiInstance && isVapiCallActive()) {
+      console.log("Switching assistant to maintain microphone permissions");
+      
+      // End current call and immediately start new one
+      vapiInstance.stop();
+      
+      // Small delay to allow cleanup
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Start new call with new assistant
+      vapiInstance.start(assistantId);
+    } else {
+      // No active call, use regular initiate
+      return await initiateVapiCall(params);
+    }
+    
+    return {
+      success: true,
+      message: character.greeting
+    };
+  } catch (error: any) {
+    console.error("Error switching assistant:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to switch assistant"
+    };
+  }
+};
+
+/**
  * Register event handlers for Vapi speech events
  */
 export const registerSpeechEventHandlers = ({
@@ -233,6 +299,8 @@ export default {
   initiateVapiCall,
   sendMessageToVapi,
   endVapiCall,
+  switchAssistant,
+  isVapiCallActive,
   audioEffects,
   registerSpeechEventHandlers,
   unregisterSpeechEventHandlers

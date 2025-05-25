@@ -80,14 +80,24 @@ const CharacterPage = () => {
       setMessage(`Connecting to ${characterData.name}...`);
       vapiService.audioEffects.connect();
       
-      // Call Vapi API with event handlers
-      vapiService.initiateVapiCall({ 
-        characterId,
-        onVolumeLevel: (volume: number) => {
-          console.log("🎵 Vapi volume level:", volume);
-          setAudioLevel(volume);
-        }
-      })
+      // Check if we have an active call, if so switch assistant to maintain mic permissions
+      const callPromise = vapiService.isVapiCallActive() 
+        ? vapiService.switchAssistant({ 
+            characterId,
+            onVolumeLevel: (volume: number) => {
+              console.log("🎵 Vapi volume level:", volume);
+              setAudioLevel(volume);
+            }
+          })
+        : vapiService.initiateVapiCall({ 
+            characterId,
+            onVolumeLevel: (volume: number) => {
+              console.log("🎵 Vapi volume level:", volume);
+              setAudioLevel(volume);
+            }
+          });
+      
+      callPromise
         .then(response => {
           if (response.success) {
             setCharacter(characterData);
@@ -106,10 +116,11 @@ const CharacterPage = () => {
         });
     }, 1000);
     
-    // Clean up function to end the Vapi call when navigating away
+    // Clean up function - don't end call immediately to maintain mic permissions
     return () => {
       clearTimeout(connectingTimeout);
-      vapiService.endVapiCall();
+      // Don't end call here - let switchAssistant handle transitions
+      // vapiService.endVapiCall();
     };
   }, [characterId, navigate, setCharacter, setMessage, setStatus, setAudioLevel]);
 
