@@ -4,6 +4,7 @@ import { Character } from '../../config/characters';
 import { vertexShader } from './shaders/vertexShader';
 import { fragmentShader } from './shaders/fragmentShader';
 import { getCharacterConfig } from './visualizerConfig';
+import { registerSpeechEventHandlers, unregisterSpeechEventHandlers } from '../../services/vapiService';
 
 interface AudioVisualizerProps {
   character?: Character | null;
@@ -22,8 +23,24 @@ const AudioVisualizer = ({ character, audioLevel = 0, className = '' }: AudioVis
   
   // Store current audio level from Vapi
   const currentAudioLevelRef = useRef<number>(0);
-
-  // Audio levels are now handled by CharacterPage and passed via props or context
+  
+  // Register Vapi event handlers for audio visualization
+  useEffect(() => {
+    if (!character) return;
+    
+    // Register handlers to receive audio levels from Vapi
+    registerSpeechEventHandlers({
+      onVolumeLevel: (volume: number) => {
+        // Store the volume level for use in animation
+        currentAudioLevelRef.current = volume;
+      }
+    });
+    
+    return () => {
+      // Cleanup Vapi event handlers
+      unregisterSpeechEventHandlers();
+    };
+  }, [character]);
 
   // Initialize and cleanup Three.js scene
   useEffect(() => {
@@ -97,7 +114,7 @@ const AudioVisualizer = ({ character, audioLevel = 0, className = '' }: AudioVis
       uniforms.u_frequency.value = currentLevel * 100;
       
       // Debug logging
-      if (currentLevel > 0 && Math.random() < 0.1) {
+      if (currentLevel > 0 && Math.random() < 0.01) {
         console.log("🎨 Visualizer level:", currentLevel, "Scaled:", currentLevel * 100);
       }
 
