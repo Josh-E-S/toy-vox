@@ -10,10 +10,6 @@ interface CharacterContextType {
   setCharacter: (character: Character | null) => void;
   message: string;
   setMessage: (message: string) => void;
-  isListening: boolean;
-  setIsListening: (isListening: boolean) => void;
-  isTalking: boolean;
-  setIsTalking: (isTalking: boolean) => void;
   audioLevel: number;
   setAudioLevel: (level: number) => void;
   handleReset: () => void;
@@ -25,16 +21,12 @@ export const CharacterProvider = ({ children }: { children: ReactNode }) => {
   const [status, setStatus] = useState<Status>('waiting');
   const [character, setCharacter] = useState<Character | null>(null);
   const [message, setMessage] = useState<string>('Place a toy on the base to begin');
-  const [isListening, setIsListening] = useState<boolean>(false);
-  const [isTalking, setIsTalking] = useState<boolean>(false);
   const [audioLevel, setAudioLevel] = useState<number>(0);
 
   const handleReset = () => {
     setStatus('waiting');
     setCharacter(null);
     setMessage('Place a toy on the base to begin');
-    setIsListening(false);
-    setIsTalking(false);
     setAudioLevel(0);
   };
 
@@ -47,10 +39,6 @@ export const CharacterProvider = ({ children }: { children: ReactNode }) => {
         setCharacter,
         message,
         setMessage,
-        isListening,
-        setIsListening,
-        isTalking,
-        setIsTalking,
         audioLevel,
         setAudioLevel,
         handleReset

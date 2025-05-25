@@ -11,12 +11,14 @@ interface AudioVisualizerProps {
   character?: Character | null;
   audioLevel?: number;
   className?: string;
+  onAudioLevel?: (level: number) => void;
 }
 
 const AudioVisualizer = ({ 
   character, 
   audioLevel = 0, 
-  className = ''
+  className = '',
+  onAudioLevel
 }: AudioVisualizerProps) => {
   const { settings } = useVisualizerSettings();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,6 +41,10 @@ const AudioVisualizer = ({
       onVolumeLevel: (volume: number) => {
         // Store the volume level for use in animation
         currentAudioLevelRef.current = volume;
+        // Pass the level back to parent component
+        if (onAudioLevel) {
+          onAudioLevel(volume);
+        }
       }
     });
     

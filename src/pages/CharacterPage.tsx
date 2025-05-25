@@ -47,11 +47,7 @@ const CharacterPage = () => {
     character, 
     setCharacter, 
     message, 
-    setMessage, 
-    isListening, 
-    setIsListening, 
-    isTalking,
-    setIsTalking,
+    setMessage,
     audioLevel, 
     setAudioLevel
   } = useCharacter();
@@ -90,15 +86,6 @@ const CharacterPage = () => {
         onVolumeLevel: (volume: number) => {
           console.log("🎵 Vapi volume level:", volume);
           setAudioLevel(volume);
-        },
-        onSpeechStart: () => {
-          setIsTalking(true);
-          setIsListening(false);
-        },
-        onSpeechEnd: () => {
-          setIsTalking(false);
-          // When assistant stops talking, go back to listening for user input
-          setIsListening(true);
         }
       })
         .then(response => {
@@ -108,11 +95,6 @@ const CharacterPage = () => {
             setMessage(response.message || characterData.greeting);
             vapiService.audioEffects.magic();
             
-            // Start listening immediately after connection
-            setTimeout(() => {
-              setIsListening(true);
-              setMessage(`Listening for your voice...`);
-            }, 3000);
           } else {
             setMessage(`Error: ${response.error}`);
             setTimeout(() => navigate('/'), 3000);
@@ -129,7 +111,7 @@ const CharacterPage = () => {
       clearTimeout(connectingTimeout);
       vapiService.endVapiCall();
     };
-  }, [characterId, navigate, setCharacter, setMessage, setStatus, setAudioLevel, setIsTalking]);
+  }, [characterId, navigate, setCharacter, setMessage, setStatus, setAudioLevel]);
 
 
   // Start animations when component mounts
@@ -137,14 +119,6 @@ const CharacterPage = () => {
     controls.start('visible');
   }, [controls]);
 
-  // Update animation state based on listening status
-  useEffect(() => {
-    if (isListening) {
-      controls.start('active');
-    } else {
-      controls.start('inactive');
-    }
-  }, [isListening, controls]);
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -157,6 +131,7 @@ const CharacterPage = () => {
           character={character} 
           audioLevel={audioLevel} 
           className="opacity-80"
+          onAudioLevel={setAudioLevel}
         />
       )}
       
@@ -269,16 +244,41 @@ const CharacterPage = () => {
                   {character.name}
                 </motion.h2>
                 
+                {/* Multi-ring status circle */}
+                <div className="relative w-40 h-40 mx-auto mb-6">
+                  {/* Outer ring */}
+                  <div className={`absolute inset-0 rounded-full transition-colors duration-300 ${
+                    audioLevel > 0 
+                      ? 'bg-gradient-to-br from-blue-400 to-purple-500 opacity-20' 
+                      : 'bg-gradient-to-br from-green-400 to-emerald-500 opacity-15'
+                  }`}></div>
+                  
+                  {/* Middle ring */}
+                  <div className={`absolute inset-2 rounded-full transition-colors duration-300 ${
+                    audioLevel > 0 
+                      ? 'bg-gradient-to-br from-blue-500 to-purple-600 opacity-30' 
+                      : 'bg-gradient-to-br from-green-500 to-emerald-600 opacity-25'
+                  }`}></div>
+                  
+                  {/* Inner ring */}
+                  <div className={`absolute inset-4 rounded-full transition-colors duration-300 ${
+                    audioLevel > 0 
+                      ? 'bg-gradient-to-br from-blue-600 to-purple-700 opacity-40' 
+                      : 'bg-gradient-to-br from-green-600 to-emerald-700 opacity-35'
+                  }`}></div>
+                  
+                  {/* Center circle with text */}
+                  <div className={`absolute inset-6 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                    audioLevel > 0 
+                      ? 'bg-gradient-to-br from-blue-700 to-purple-800 opacity-60' 
+                      : 'bg-gradient-to-br from-green-700 to-emerald-800 opacity-50'
+                  }`}>
+                    <div className="text-white text-lg font-medium">
+                      {audioLevel > 0 ? 'Speaking' : 'Listening'}
+                    </div>
+                  </div>
+                </div>
                 
-                
-                <motion.p 
-                  className="text-white text-lg max-w-sm mx-auto"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  {message}
-                </motion.p>
               </motion.div>
             ) : null}
           </AnimatePresence>
@@ -299,7 +299,7 @@ const CharacterPage = () => {
             }}
           >
             {status === 'active' && character
-              ? `${character.name} | ${isTalking ? 'Speaking...' : isListening ? 'Listening...' : 'Ready'}`
+              ? character.name
               : 'Ready for toy interaction'}
           </motion.p>
         </motion.div>
