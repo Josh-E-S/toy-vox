@@ -6,7 +6,7 @@ A React-based web application for the Vapi Build Challenge that enables NFC-acti
 
 Try the application at: [https://josh-e-s.github.io/toy-vox/](https://josh-e-s.github.io/toy-vox/)
 
-Last updated: May 25, 2025 - 10:38 AM PST
+Last updated: May 25, 2025 - 10:48 AM PST - With API keys
 
 ## Overview
 
