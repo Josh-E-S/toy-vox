@@ -7,6 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Start development server**: `npm run dev`
 - **Build for production**: `npm run build` (runs TypeScript compilation then Vite build)
 - **Preview production build**: `npm run preview`
+- **Type checking**: `npm run typecheck` (runs TypeScript compiler without emitting)
+- **Format code**: `npm run format` (runs Prettier on src directory)
 
 ## Architecture Overview
 
@@ -61,3 +63,61 @@ The `CharacterContext` provides global state for:
 - `services/`: External API integrations (Vapi)
 - `config/`: Application configuration and character data
 - `public/assets/characters/`: Character-specific GIF backgrounds
+
+### Environment Setup
+Create a `.env` file with the following variables:
+```
+VITE_VAPI_API_KEY=your_vapi_api_key
+VITE_VAPI_ASSISTANT_ID=your_assistant_id
+```
+
+### Development Principles
+
+**Component Development**
+- Always use HeroUI components first before creating custom ones
+- Leverage existing libraries (Framer Motion, react-intersection-observer, etc.)
+- Avoid writing custom CSS when component libraries provide solutions
+- Use pre-built animations and effects from libraries
+
+### Common Development Tasks
+
+**Adding a New Character**
+1. Add character definition to `config/characters.ts` with unique ID, name, and personality
+2. Create GIF assets in `public/assets/characters/{characterId}/`
+3. Configure Vapi assistant mapping in character definition
+
+**Modifying Audio Visualizer**
+- Shader files: `components/AudioVisualizer/shaders/`
+- Configuration: `components/AudioVisualizer/visualizerConfig.ts`
+- The visualizer responds to `audioLevel` from CharacterContext
+
+**Working with Voice Integration**
+- All Vapi logic is centralized in `services/vapiService.ts`
+- Voice events update CharacterContext state automatically
+- Check browser console for Vapi connection status and errors
+
+### Future Feature Plans
+
+**Category System**
+- Fantasy, Space Adventure, Educational, Animal Friends, Superheroes categories
+- Character unlock/progression system
+- Achievement and XP mechanics
+
+**Enhanced Features**
+- User profiles with favorite characters
+- Conversation history and memory system
+- Parental controls and time limits
+- Voice-controlled mini-games
+- Daily challenges and streaks
+
+**Technical Roadmap**
+- Progressive Web App capabilities
+- Mobile Flutter companion app
+- Offline character selection
+- Performance optimizations for low-end devices
+
+**UI/UX Evolution**
+- Modern hero landing page with scroll-based character reveals
+- 3D character cards with animations
+- Immersive full-screen character interactions
+- Parallax scrolling effects and micro-interactions
