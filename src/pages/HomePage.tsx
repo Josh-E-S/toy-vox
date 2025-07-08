@@ -71,11 +71,11 @@ const HomePage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 whileHover={{ 
-                  scale: 1.05,
-                  transition: { duration: 0.2 }
+                  scale: 1.02,
+                  transition: { duration: 0.3, ease: "easeOut" }
                 }}
                 whileTap={{ scale: 0.98 }}
-                onHoverStart={() => playSound('hover')}
+                onMouseEnter={() => playSound('hover')}
               >
                 <Card 
                   isPressable
@@ -100,22 +100,16 @@ const HomePage = () => {
                   
                   <CardBody className="p-0 relative z-10">
                     <div className="relative h-48 overflow-hidden">
-                      <motion.div
-                        className="w-full h-full"
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Image
-                          src={character.background?.slides?.[0]?.src || ''}
-                          alt={character.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </motion.div>
+                      <Image
+                        src={character.background?.slides?.[0]?.src || ''}
+                        alt={character.name}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       
                       {/* Shimmer effect on hover */}
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                      <div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none"
                       />
                     </div>
                   </CardBody>
@@ -126,24 +120,18 @@ const HomePage = () => {
                     <p className="text-sm text-white/70 mb-3">
                       {character.personality.split('.')[0]}
                     </p>
-                    <motion.div
-                      className="w-full"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      className="w-full group-hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                      style={{ 
+                        backgroundColor: `${character.color}40`,
+                        color: character.color,
+                        borderColor: character.color
+                      }}
                     >
-                      <Button
-                        size="sm"
-                        variant="flat"
-                        className="w-full group-hover:shadow-lg transition-all duration-300"
-                        style={{ 
-                          backgroundColor: `${character.color}40`,
-                          color: character.color,
-                          borderColor: character.color
-                        }}
-                      >
-                        Talk to {character.name}
-                      </Button>
-                    </motion.div>
+                      Talk to {character.name}
+                    </Button>
                   </CardFooter>
                 </Card>
               </motion.div>
