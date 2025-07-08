@@ -12,12 +12,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-ToyVox is an NFC-activated character voice interaction app built with React, Vapi AI, and Three.js for visualizations.
+ToyVox is a character voice interaction webapp built with React, Vapi AI, and Three.js for visualizations. Currently focused on the web version with a phone app planned.
 
 ### Core Application Flow
 The app follows a simple state-driven flow managed by `CharacterContext`:
-1. **Waiting** → User places NFC toy on base
-2. **Detecting** → NFC tag detected, character identified
+1. **Waiting** → User selects a character
+2. **Detecting** → Character selected from the interface
 3. **Connecting** → Vapi voice assistant initialized
 4. **Active** → Voice conversation with character
 

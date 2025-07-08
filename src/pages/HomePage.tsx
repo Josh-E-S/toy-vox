@@ -3,16 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardFooter } from '@heroui/card';
 import { Button } from '@heroui/button';
 import { Image } from '@heroui/image';
-import { Chip } from '@heroui/chip';
 import { motion } from 'framer-motion';
 import DynamicBackground from '../components/DynamicBackground';
-import { useCharacter } from '../context/CharacterContext';
 import Logo from '../components/Logo';
 import MainLayout from '../layouts/MainLayout';
 import { FiSettings } from 'react-icons/fi';
 import SettingsModal from '../components/SettingsModal';
 import vapiService from '../services/vapiService';
 import characters from '../config/characters';
+import { playSound, preloadSounds } from '../services/soundService';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -21,6 +20,7 @@ const HomePage = () => {
   // End any active Vapi calls when returning to home page
   useEffect(() => {
     vapiService.endVapiCall();
+    preloadSounds();
   }, []);
 
   // Get character data
@@ -70,41 +70,80 @@ const HomePage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ 
+                  scale: 1.05,
+                  transition: { duration: 0.2 }
+                }}
+                whileTap={{ scale: 0.98 }}
+                onHoverStart={() => playSound('hover')}
               >
                 <Card 
                   isPressable
-                  onPress={() => navigate(`/character/${character.id}`)}
-                  className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 transition-all duration-300"
+                  onPress={() => {
+                    playSound('select');
+                    navigate(`/character/${character.id}`);
+                  }}
+                  className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 transition-all duration-300 group relative overflow-hidden"
+                  style={{
+                    boxShadow: '0 0 0 0px transparent',
+                  }}
                 >
-                  <CardBody className="p-0">
+                  {/* Animated border glow on hover */}
+                  <motion.div
+                    className="absolute inset-0 rounded-large opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      background: `linear-gradient(45deg, ${character.color}40, ${character.secondaryColor}40)`,
+                      filter: 'blur(20px)',
+                      transform: 'scale(1.1)',
+                    }}
+                  />
+                  
+                  <CardBody className="p-0 relative z-10">
                     <div className="relative h-48 overflow-hidden">
-                      <Image
-                        src={character.background?.slides?.[0]?.src || ''}
-                        alt={character.name}
-                        className="w-full h-full object-cover"
-                      />
+                      <motion.div
+                        className="w-full h-full"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Image
+                          src={character.background?.slides?.[0]?.src || ''}
+                          alt={character.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </motion.div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      
+                      {/* Shimmer effect on hover */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                      />
                     </div>
                   </CardBody>
-                  <CardFooter className="flex flex-col items-start p-4">
+                  <CardFooter className="flex flex-col items-start p-4 relative z-10">
                     <h3 className="text-xl font-bold text-white mb-1">
                       {character.name}
                     </h3>
                     <p className="text-sm text-white/70 mb-3">
                       {character.personality.split('.')[0]}
                     </p>
-                    <Button
-                      size="sm"
-                      variant="flat"
+                    <motion.div
                       className="w-full"
-                      style={{ 
-                        backgroundColor: `${character.color}40`,
-                        color: character.color,
-                        borderColor: character.color
-                      }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
-                      Talk to {character.name}
-                    </Button>
+                      <Button
+                        size="sm"
+                        variant="flat"
+                        className="w-full group-hover:shadow-lg transition-all duration-300"
+                        style={{ 
+                          backgroundColor: `${character.color}40`,
+                          color: character.color,
+                          borderColor: character.color
+                        }}
+                      >
+                        Talk to {character.name}
+                      </Button>
+                    </motion.div>
                   </CardFooter>
                 </Card>
               </motion.div>

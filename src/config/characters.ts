@@ -107,6 +107,82 @@ const characters: Characters = {
         { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/spongebob/background3.gif', type: 'gif' }
       ]
     }
+  },
+  'shrek001': {
+    id: 'shrek001',
+    name: 'Shrek',
+    color: '#228B22',
+    secondaryColor: '#006400',
+    personality: 'Grumpy but kindhearted, protective, sarcastic',
+    greeting: "What are you doing in my swamp?!",
+    background: {
+      type: 'slideshow',
+      overlay: true,
+      transitionDuration: 1.2,
+      slideDuration: 2.4,
+      slides: [
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/shrek/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/shrek/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/shrek/background3.gif', type: 'gif' }
+      ]
+    }
+  },
+  'robotnik001': {
+    id: 'robotnik001',
+    name: 'Dr. Robotnik',
+    color: '#FF4500',
+    secondaryColor: '#8B0000',
+    personality: 'Evil genius, megalomaniac, brilliant inventor',
+    greeting: "I am Dr. Robotnik, the greatest scientific genius in the world!",
+    background: {
+      type: 'slideshow',
+      overlay: true,
+      transitionDuration: 1.2,
+      slideDuration: 2.4,
+      slides: [
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/robotnik/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/robotnik/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/robotnik/background3.gif', type: 'gif' }
+      ]
+    }
+  },
+  'tails001': {
+    id: 'tails001',
+    name: 'Tails',
+    color: '#FFA500',
+    secondaryColor: '#FF8C00',
+    personality: 'Smart, loyal, inventive, shy but brave',
+    greeting: "Hi! I'm Tails! Want to see what I'm building?",
+    background: {
+      type: 'slideshow',
+      overlay: true,
+      transitionDuration: 1.2,
+      slideDuration: 2.4,
+      slides: [
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/tails/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/tails/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/tails/background3.gif', type: 'gif' }
+      ]
+    }
+  },
+  'patrick001': {
+    id: 'patrick001',
+    name: 'Patrick Star',
+    color: '#FFB6C1',
+    secondaryColor: '#FF69B4',
+    personality: 'Simple-minded, loyal, silly, carefree',
+    greeting: "Hi, I'm Patrick Star! Is mayonnaise an instrument?",
+    background: {
+      type: 'slideshow',
+      overlay: true,
+      transitionDuration: 1.2,
+      slideDuration: 2.4,
+      slides: [
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/patrick/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/patrick/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/patrick/background3.gif', type: 'gif' }
+      ]
+    }
   }
 };
 

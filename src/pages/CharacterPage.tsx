@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimation, Variants } from 'framer-motion';
 import DynamicBackground from '../components/DynamicBackground';
@@ -7,10 +7,16 @@ import AudioVisualizer from '../components/AudioVisualizer';
 import { useCharacter } from '../context/CharacterContext';
 import characters from '../config/characters';
 import vapiService from '../services/vapiService';
+import { playSound } from '../services/soundService';
+import Confetti from 'react-confetti';
+import { useWindowSize } from 'react-use';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const CharacterPage = () => {
   // Animation controls
   const controls = useAnimation();
+  const [showConfetti, setShowConfetti] = useState(false);
+  const { width, height } = useWindowSize();
   
   // Animation variants
   const containerVariants: Variants = {
@@ -72,13 +78,13 @@ const CharacterPage = () => {
     // Start character detection sequence
     setStatus('detecting');
     setMessage(`${characterData.name} detected!`);
-    vapiService.audioEffects.detect();
+    playSound('select');
     
     // Simulate connection process
     const connectingTimeout = setTimeout(() => {
       setStatus('connecting');
       setMessage(`Connecting to ${characterData.name}...`);
-      vapiService.audioEffects.connect();
+      playSound('connect');
       
       // Check if we have an active call, if so switch assistant to maintain mic permissions
       const callPromise = vapiService.isVapiCallActive() 
@@ -103,7 +109,9 @@ const CharacterPage = () => {
             setCharacter(characterData);
             setStatus('active');
             setMessage(response.message || characterData.greeting);
-            vapiService.audioEffects.magic();
+            playSound('connect');
+            setShowConfetti(true);
+            setTimeout(() => setShowConfetti(false), 3000);
             
           } else {
             setMessage(`Error: ${response.error}`);
@@ -133,6 +141,18 @@ const CharacterPage = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Confetti Effect */}
+      {showConfetti && (
+        <Confetti
+          width={width}
+          height={height}
+          recycle={false}
+          numberOfPieces={200}
+          gravity={0.1}
+          colors={character ? [character.color, character.secondaryColor, '#FFD700', '#FFF'] : ['#FFD700', '#FFF']}
+        />
+      )}
+      
       {/* Character Background */}
       <DynamicBackground character={character} />
       
@@ -235,6 +255,19 @@ const CharacterPage = () => {
                 >
                   {message}
                 </motion.p>
+                {status === 'connecting' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="mt-8"
+                  >
+                    <LoadingSpinner 
+                      size="small" 
+                      color={character?.color}
+                    />
+                  </motion.div>
+                )}
               </motion.div>
             ) : status === 'active' && character ? (
               /* Active conversation state */

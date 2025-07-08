@@ -20,13 +20,13 @@ const CharacterContext = createContext<CharacterContextType | undefined>(undefin
 export const CharacterProvider = ({ children }: { children: ReactNode }) => {
   const [status, setStatus] = useState<Status>('waiting');
   const [character, setCharacter] = useState<Character | null>(null);
-  const [message, setMessage] = useState<string>('Place a toy on the base to begin');
+  const [message, setMessage] = useState<string>('Choose a character to start chatting!');
   const [audioLevel, setAudioLevel] = useState<number>(0);
 
   const handleReset = () => {
     setStatus('waiting');
     setCharacter(null);
-    setMessage('Place a toy on the base to begin');
+    setMessage('Choose a character to start chatting!');
     setAudioLevel(0);
   };
 
