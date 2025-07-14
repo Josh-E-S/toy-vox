@@ -1,7 +1,6 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { CharacterProvider } from "./context/CharacterContext";
 import { VisualizerSettingsProvider } from "./context/VisualizerSettingsContext";
-import MainLayout from "./layouts/MainLayout";
 
 // ToyVox Pages
 import HomePage from "./pages/HomePage";
@@ -12,8 +11,8 @@ function App() {
     <VisualizerSettingsProvider>
       <CharacterProvider>
         <Routes>
-          <Route element={<MainLayout><HomePage /></MainLayout>} path="/" />
-          <Route element={<MainLayout><CharacterPageEnhanced /></MainLayout>} path="/character/:characterId" />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/character/:characterId" element={<CharacterPageEnhanced />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </CharacterProvider>

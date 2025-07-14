@@ -255,9 +255,9 @@ const characters: Characters = {
       transitionDuration: 1.2,
       slideDuration: 2.4,
       slides: [
-        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/kungfupanda/background.gif', type: 'gif' },
-        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/kungfupanda/background2.gif', type: 'gif' },
-        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/kungfupanda/background3.gif', type: 'gif' }
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/po/background.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/po/background2.gif', type: 'gif' },
+        { src: 'https://storage.googleapis.com/toy-vox-public-assets/public-assets/characters/po/background3.gif', type: 'gif' }
       ]
     }
   },
