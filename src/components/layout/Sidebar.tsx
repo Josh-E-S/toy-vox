@@ -13,7 +13,8 @@ import {
   HiGlobeAlt,
   HiUserGroup,
   HiStar,
-  HiCube
+  HiCube,
+  HiPuzzle
 } from 'react-icons/hi';
 import { FiSettings } from 'react-icons/fi';
 import { Character } from '@/config/characters';
@@ -55,6 +56,9 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
         break;
       case 'favorites':
         navigate('/?filter=favorites');
+        break;
+      case 'games':
+        navigate('/games');
         break;
       case 'settings':
         onSettingsClick?.();
@@ -116,6 +120,12 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
         startContent={<HiStar className="w-4 h-4 text-yellow-500" />}
       >
         {!isCompact ? "Favorites" : ""}
+      </ListboxItem>
+      <ListboxItem
+        key="games"
+        startContent={<HiPuzzle className="w-5 h-5 text-purple-500" />}
+      >
+        {!isCompact ? "Games" : ""}
       </ListboxItem>
     </ListboxSection>
   );

@@ -6,6 +6,7 @@ import { VoxTokenProvider } from "./context/VoxTokenContext";
 // ToyVox Pages
 import HomePage from "./pages/HomePage";
 import CharacterPageEnhanced from "./pages/CharacterPageEnhanced";
+import GamesPage from "./pages/GamesPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <CharacterProvider>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/games" element={<GamesPage />} />
             <Route path="/character/:characterId" element={<CharacterPageEnhanced />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

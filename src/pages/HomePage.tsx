@@ -13,6 +13,7 @@ import BlurredBackground from '../components/layout/BlurredBackground';
 import PopoverFilter from '../components/filters/PopoverFilter';
 import { HiSearch } from 'react-icons/hi';
 import { PrizeWheel, PrizeWheelButton, VoxTokenDisplay } from '../components/prizeWheel';
+import { GamesButton } from '../components/games';
 
 const HomePage = () => {
   const [searchParams] = useSearchParams();
@@ -118,9 +119,10 @@ const HomePage = () => {
     >
       <div className="flex flex-col min-h-screen">
 
-        {/* Prize Wheel Button - Top Right */}
+        {/* Game Controls - Top Right */}
         <div className="absolute top-4 right-4 lg:top-8 lg:right-8 z-20 flex items-center gap-4">
           <VoxTokenDisplay />
+          <GamesButton />
           <PrizeWheelButton onClick={() => setShowPrizeWheel(true)} />
         </div>
 
