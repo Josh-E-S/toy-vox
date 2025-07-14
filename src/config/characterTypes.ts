@@ -11,7 +11,7 @@ export interface CharacterTheme {
   glow: string;
 }
 
-export type CharacterCategory = 'fantasy' | 'adventure' | 'educational' | 'animals' | 'heroes';
+export type CharacterCategory = 'fantasy' | 'adventure' | 'educational' | 'animals' | 'heroes' | 'games' | 'disney' | 'pixar' | 'marvel' | 'cartoon';
 export type CharacterMood = 'playful' | 'calm' | 'energetic' | 'mysterious';
 
 export interface ExtendedCharacter {

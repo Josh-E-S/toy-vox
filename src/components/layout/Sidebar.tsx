@@ -7,13 +7,13 @@ import { Avatar } from '@heroui/avatar';
 import { motion } from 'framer-motion';
 import { 
   HiHome, 
- 
   HiCollection,
   HiSparkles,
   HiLightningBolt,
   HiGlobeAlt,
   HiUserGroup,
   HiStar,
+  HiCube
 } from 'react-icons/hi';
 import { FiSettings } from 'react-icons/fi';
 import { Character } from '@/config/characters';
@@ -74,7 +74,12 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
     adventure: <HiLightningBolt className="w-4 h-4" />,
     educational: <HiGlobeAlt className="w-4 h-4" />,
     animals: <HiUserGroup className="w-4 h-4" />,
-    heroes: <HiStar className="w-4 h-4" />
+    heroes: <HiStar className="w-4 h-4" />,
+    games: <HiCube className="w-4 h-4" />,
+    disney: <HiSparkles className="w-4 h-4" />,
+    pixar: <HiLightningBolt className="w-4 h-4" />,
+    marvel: <HiStar className="w-4 h-4" />,
+    cartoon: <HiCollection className="w-4 h-4" />
   };
 
   const categoryNames: Record<string, string> = {
@@ -82,12 +87,17 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
     adventure: 'Adventure',
     educational: 'Educational',
     animals: 'Animal Friends',
-    heroes: 'Superheroes'
+    heroes: 'Superheroes',
+    games: 'Game Characters',
+    disney: 'Disney',
+    pixar: 'Pixar',
+    marvel: 'Marvel',
+    cartoon: 'Cartoons'
   };
 
   // Sections to render
   const mainNavSection = (
-    <ListboxSection key="main-nav" title={!isCompact ? "Menu" : ""} className="mb-4">
+    <ListboxSection key="main-nav" title={!isCompact ? "" : ""} className="mb-4">
       <ListboxItem
         key="home"
         startContent={<HiHome className="w-5 h-5 text-white/80" />}
@@ -202,16 +212,15 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
         <motion.div 
           className="flex items-center justify-center"
           whileHover={{ scale: 1.05 }}
+          onClick={() => navigate('/')}
         >
           <img 
             src="https://storage.googleapis.com/toy-vox-public-assets/public-assets/logo.png" 
             alt="ToyVox" 
-            className={isCompact ? "w-12 h-auto" : "w-full max-w-[200px] h-auto"}
+            className={isCompact ? "w-12 h-auto" : "w-full max-w-[150px] h-auto"}
           />
         </motion.div>
       </div>
-
-      {/* Search removed - moved to main window */}
 
       {/* Navigation */}
       <ScrollShadow className="flex-1 px-2">

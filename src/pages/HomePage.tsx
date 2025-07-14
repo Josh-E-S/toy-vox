@@ -68,11 +68,16 @@ const HomePage = () => {
   // Category data
   const categories = [
     { key: 'all', title: 'All Characters' },
+    { key: 'disney', title: 'Disney' },
+    { key: 'pixar', title: 'Pixar' },
+    { key: 'marvel', title: 'Marvel' },
+    { key: 'heroes', title: 'Superheroes' },
+    { key: 'games', title: 'Game Characters' },
+    { key: 'cartoon', title: 'Cartoons' },
     { key: 'fantasy', title: 'Fantasy' },
     { key: 'adventure', title: 'Adventure' },
-    { key: 'educational', title: 'Educational' },
     { key: 'animals', title: 'Animal Friends' },
-    { key: 'heroes', title: 'Superheroes' }
+    { key: 'educational', title: 'Educational' }
   ];
   
   // End any active Vapi calls when returning to home page
