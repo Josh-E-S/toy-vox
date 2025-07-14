@@ -1,21 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Listbox, ListboxItem, ListboxSection } from '@heroui/listbox';
-import { Input } from '@heroui/input';
 import { ScrollShadow } from '@heroui/scroll-shadow';
 import { Chip } from '@heroui/chip';
 import { Avatar } from '@heroui/avatar';
 import { motion } from 'framer-motion';
 import { 
   HiHome, 
-  HiSearch, 
+ 
   HiCollection,
   HiSparkles,
   HiLightningBolt,
   HiGlobeAlt,
   HiUserGroup,
   HiStar,
-  HiClock
 } from 'react-icons/hi';
 import { FiSettings } from 'react-icons/fi';
 import { Character } from '@/config/characters';
@@ -29,7 +27,6 @@ interface SidebarProps {
 
 const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: SidebarProps) => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set(['home']));
 
   // Get character data
@@ -39,10 +36,7 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
   const recentCharacters = characterList.slice(0, 5);
   
   // Filter characters based on search
-  const filteredCharacters = characterList.filter(char => 
-    char.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    char.personality.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCharacters = characterList;
 
   // Group characters by category
   const charactersByCategory = characterList.reduce((acc, char) => {
@@ -118,7 +112,7 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
 
   const quickAccessSection = null; // Removed
 
-  const searchResultsSection = searchQuery && !isCompact ? (
+  const searchResultsSection = false && !isCompact ? (
     <ListboxSection 
       key="search-results"
       title={`Search Results (${filteredCharacters.length})`}
@@ -142,7 +136,7 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
     </ListboxSection>
   ) : null;
 
-  const recentCharactersSection = !searchQuery && !isCompact ? (
+  const recentCharactersSection = !isCompact ? (
     <ListboxSection key="recent-chars" title="Recent Characters" className="mb-4">
       {recentCharacters.map((character) => (
         <ListboxItem
@@ -166,7 +160,7 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
     </ListboxSection>
   ) : null;
 
-  const categoriesSection = !searchQuery && !isCompact ? (
+  const categoriesSection = !isCompact ? (
     <ListboxSection key="categories" title="Categories" className="mb-4">
       {Object.entries(charactersByCategory).map(([category, chars]) => (
         <ListboxItem

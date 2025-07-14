@@ -12,12 +12,14 @@ import CharacterCard from '../components/cards/CharacterCard';
 import BlurredBackground from '../components/layout/BlurredBackground';
 import PopoverFilter from '../components/filters/PopoverFilter';
 import { HiSearch } from 'react-icons/hi';
+import { PrizeWheel, PrizeWheelButton, VoxTokenDisplay } from '../components/prizeWheel';
 
 const HomePage = () => {
   const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('popular');
+  const [showPrizeWheel, setShowPrizeWheel] = useState(false);
   
   // Get filter params
   const categoryParam = searchParams.get('category');
@@ -111,8 +113,14 @@ const HomePage = () => {
     >
       <div className="flex flex-col min-h-screen">
 
+        {/* Prize Wheel Button - Top Right */}
+        <div className="absolute top-4 right-4 lg:top-8 lg:right-8 z-20 flex items-center gap-4">
+          <VoxTokenDisplay />
+          <PrizeWheelButton onClick={() => setShowPrizeWheel(true)} />
+        </div>
+
         {/* Main Content */}
-        <div className="flex-1 px-4 lg:px-8 py-8">
+        <div className="flex-1 px-4 lg:px-8 py-8 pt-24">
           {/* Greeting Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -187,9 +195,9 @@ const HomePage = () => {
                   placeholder="Sort by"
                   variant="bordered"
                 >
-                  <SelectItem key="popular" value="popular">Most Popular</SelectItem>
-                  <SelectItem key="alphabetical" value="alphabetical">Alphabetical</SelectItem>
-                  <SelectItem key="newest" value="newest">Newest First</SelectItem>
+                  <SelectItem key="popular">Most Popular</SelectItem>
+                  <SelectItem key="alphabetical">Alphabetical</SelectItem>
+                  <SelectItem key="newest">Newest First</SelectItem>
                 </Select>
               </div>
             )}
@@ -207,6 +215,12 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Prize Wheel Modal */}
+      <PrizeWheel 
+        isOpen={showPrizeWheel} 
+        onClose={() => setShowPrizeWheel(false)} 
+      />
     </AppLayout>
   );
 };

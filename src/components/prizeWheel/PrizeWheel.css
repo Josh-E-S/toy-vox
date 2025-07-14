@@ -1,0 +1,101 @@
+/* Casino-style animations and effects */
+
+.casino-lights {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(255, 20, 147, 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 40% 40%, rgba(0, 206, 209, 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(50, 205, 50, 0.3) 0%, transparent 40%);
+  animation: casinoLights 3s ease-in-out infinite;
+}
+
+@keyframes casinoLights {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1) rotate(180deg);
+  }
+}
+
+/* Wheel wrapper styling */
+.wheel-wrapper {
+  position: relative;
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+}
+
+/* Override default wheel button styles */
+.wheel-wrapper button {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) !important;
+  color: #000 !important;
+  font-weight: bold !important;
+  font-size: 1.5em !important;
+  border: 3px solid #FFF !important;
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.8),
+    inset 0 0 20px rgba(255, 255, 255, 0.3) !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease !important;
+}
+
+.wheel-wrapper button:hover:not(:disabled) {
+  transform: scale(1.05) !important;
+  box-shadow: 
+    0 0 30px rgba(255, 215, 0, 1),
+    inset 0 0 30px rgba(255, 255, 255, 0.5) !important;
+}
+
+.wheel-wrapper button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Wheel spinning animation enhancement */
+.wheel-wrapper canvas {
+  transition: filter 0.3s ease;
+}
+
+.wheel-wrapper canvas.spinning {
+  filter: blur(2px);
+}
+
+/* Sparkle animation for buttons */
+@keyframes sparkle {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.sparkle {
+  animation: sparkle 1s ease-in-out infinite;
+}
+
+/* Glow pulse animation */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 1);
+  }
+}
+
+/* Modal backdrop enhancement */
+.modal-backdrop {
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.8);
+}
