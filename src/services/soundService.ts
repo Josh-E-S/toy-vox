@@ -50,7 +50,42 @@ export const preloadSounds = () => {
   // Web Audio API doesn't need preloading
 };
 
+// Voice clip cache
+const voiceClipCache = new Map<string, HTMLAudioElement>();
+
+// Play character voice clip
+export const playVoiceClip = async (url: string) => {
+  try {
+    // Check if we have a cached audio element
+    let audio = voiceClipCache.get(url);
+    
+    if (!audio) {
+      // Create new audio element and cache it
+      audio = new Audio(url);
+      audio.volume = 0.5;
+      voiceClipCache.set(url, audio);
+    }
+    
+    // Reset and play
+    audio.currentTime = 0;
+    await audio.play();
+  } catch (error) {
+    console.log('Voice clip playback failed:', error);
+  }
+};
+
+// Preload a voice clip
+export const preloadVoiceClip = (url: string) => {
+  if (!voiceClipCache.has(url)) {
+    const audio = new Audio(url);
+    audio.volume = 0.5;
+    voiceClipCache.set(url, audio);
+  }
+};
+
 export default {
   playSound,
   preloadSounds,
+  playVoiceClip,
+  preloadVoiceClip,
 };

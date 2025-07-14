@@ -5,7 +5,7 @@ import MainLayout from "./layouts/MainLayout";
 
 // ToyVox Pages
 import HomePage from "./pages/HomePage";
-import CharacterPage from "./pages/CharacterPage";
+import CharacterPageEnhanced from "./pages/CharacterPageEnhanced";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
       <CharacterProvider>
         <Routes>
           <Route element={<MainLayout><HomePage /></MainLayout>} path="/" />
-          <Route element={<MainLayout><CharacterPage /></MainLayout>} path="/character/:characterId" />
+          <Route element={<MainLayout><CharacterPageEnhanced /></MainLayout>} path="/character/:characterId" />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </CharacterProvider>

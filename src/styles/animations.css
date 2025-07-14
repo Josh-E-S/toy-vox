@@ -1,0 +1,169 @@
+/* Shared animation styles for ToyVox */
+
+/* Gradient glow effect */
+.gradient-glow {
+  background: linear-gradient(
+    var(--gradient-angle, 135deg),
+    var(--color-from, #3B82F6),
+    var(--color-to, #60A5FA)
+  );
+  filter: blur(var(--blur-amount, 20px));
+  opacity: var(--glow-opacity, 0.5);
+  transition: opacity 0.3s ease;
+}
+
+/* Card shimmer effect */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.card-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 60%
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.pulse-ring {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Ambient light pulse */
+@keyframes ambient-pulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.1);
+  }
+}
+
+.ambient-light {
+  animation: ambient-pulse 4s ease-in-out infinite;
+}
+
+/* Smooth reveal animation */
+@keyframes smooth-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.smooth-reveal {
+  animation: smooth-reveal 0.6s ease-out forwards;
+}
+
+/* Character theme CSS variables */
+:root {
+  --character-primary: #3B82F6;
+  --character-secondary: #60A5FA;
+  --character-accent: #2563EB;
+  --character-glow: #93BBFC;
+  --character-gradient-from: #3B82F6;
+  --character-gradient-to: #60A5FA;
+  --character-gradient-angle: 135deg;
+  --character-text-contrast: #FFFFFF;
+}
+
+/* Utility classes for character theming */
+.character-gradient {
+  background: linear-gradient(
+    var(--character-gradient-angle),
+    var(--character-gradient-from),
+    var(--character-gradient-to)
+  );
+}
+
+.character-glow {
+  box-shadow: 0 0 30px var(--character-glow);
+}
+
+.character-text {
+  color: var(--character-text-contrast);
+}
+
+/* Hover state utilities */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Blur background utilities */
+.blur-background-low {
+  backdrop-filter: blur(10px);
+}
+
+.blur-background-medium {
+  backdrop-filter: blur(20px);
+}
+
+.blur-background-high {
+  backdrop-filter: blur(30px);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Page transition classes */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s, transform 0.3s;
+}
