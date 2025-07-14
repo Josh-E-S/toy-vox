@@ -83,7 +83,11 @@ const AppLayout = ({ children, background, showSettings = true }: AppLayoutProps
               <HiMenu size={20} />
             </Button>
             
-            <h1 className="text-xl font-bold text-white">🎭 ToyVox</h1>
+            <img 
+              src="https://storage.googleapis.com/toy-vox-public-assets/public-assets/logo.png" 
+              alt="ToyVox" 
+              className="h-10 w-auto"
+            />
             
             {showSettings && (
               <Button

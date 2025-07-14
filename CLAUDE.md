@@ -25,7 +25,8 @@ The app follows a simple state-driven flow managed by `CharacterContext`:
 
 **Routing & Layout**
 - `App.tsx`: Main router with character-based routes (`/character/:characterId`)
-- `MainLayout.tsx`: Common layout wrapper for all pages
+- `AppLayout.tsx`: Spotify-inspired layout with sidebar navigation
+- `MainLayout.tsx`: Legacy layout wrapper (replaced by AppLayout)
 - `CharacterProvider`: Global state management for character interactions
 
 **Character System**
@@ -40,8 +41,11 @@ The app follows a simple state-driven flow managed by `CharacterContext`:
 
 **Visual Components**
 - `AudioVisualizer/`: WebGL-based voice visualization using Three.js shaders
+- `BlurredBackground.tsx`: Dynamic blurred background system with character images
 - `DynamicBackground.tsx`: Character-specific animated background system
 - `SparkleEffect.tsx`: Particle animations for UI feedback
+- `CharacterCard.tsx`: Enhanced Spotify-style cards with gradient overlays and pulsing microphone buttons
+- `PageTransition.tsx`: Smooth page transitions using Framer Motion
 
 ### State Management
 The `CharacterContext` provides global state for:
@@ -59,9 +63,15 @@ The `CharacterContext` provides global state for:
 ### File Organization
 - `pages/`: Route components (HomePage, CharacterPage, SettingsPage)
 - `components/`: Reusable UI components and visualizers
+  - `cards/`: Character cards and related components
+  - `layout/`: Layout components (Sidebar, SidebarDrawer, BlurredBackground)
+  - `filters/`: Filter components (PopoverFilter)
+  - `shared/`: Shared UI utilities and animations
 - `context/`: React context providers for global state
-- `services/`: External API integrations (Vapi)
+- `services/`: External API integrations (Vapi, soundService)
 - `config/`: Application configuration and character data
+- `hooks/`: Custom React hooks (useCharacterTheme)
+- `layouts/`: Page layout wrappers (AppLayout)
 - `public/assets/characters/`: Character-specific GIF backgrounds
 
 ### Environment Setup
@@ -79,12 +89,31 @@ VITE_VAPI_ASSISTANT_ID=your_assistant_id
 - Avoid writing custom CSS when component libraries provide solutions
 - Use pre-built animations and effects from libraries
 
+**UI/UX Patterns**
+- Spotify-inspired design with sidebar navigation
+- Dark theme with glassmorphism effects (bg-white/10, backdrop-blur)
+- Smooth animations and transitions between states
+- Responsive design with mobile drawer support
+- Dynamic theming based on character colors
+
 ### Common Development Tasks
 
 **Adding a New Character**
-1. Add character definition to `config/characters.ts` with unique ID, name, and personality
+1. Add character definition to `config/characters.ts` with unique ID, name, personality, and category
 2. Create GIF assets in `public/assets/characters/{characterId}/`
 3. Configure Vapi assistant mapping in character definition
+4. Add character color for dynamic theming
+5. Optional: Add voice clip for hover preview
+
+**Modifying the Sidebar**
+- Edit `components/layout/Sidebar.tsx` for navigation items
+- Update `layouts/AppLayout.tsx` for sidebar integration
+- Mobile drawer handled automatically via `SidebarDrawer.tsx`
+
+**Adding New Filters**
+- Use `PopoverFilter` component for dropdown filters
+- Integrate with URL parameters for persistent state
+- Follow the pattern in `HomePage.tsx` for filter implementation
 
 **Modifying Audio Visualizer**
 - Shader files: `components/AudioVisualizer/shaders/`
@@ -95,6 +124,8 @@ VITE_VAPI_ASSISTANT_ID=your_assistant_id
 - All Vapi logic is centralized in `services/vapiService.ts`
 - Voice events update CharacterContext state automatically
 - Check browser console for Vapi connection status and errors
+- Microphone buttons on character cards provide quick voice interaction
+- Sound effects are preloaded via `soundService.ts`
 
 ### Future Feature Plans
 
@@ -117,7 +148,10 @@ VITE_VAPI_ASSISTANT_ID=your_assistant_id
 - Performance optimizations for low-end devices
 
 **UI/UX Evolution**
-- Modern hero landing page with scroll-based character reveals
-- 3D character cards with animations
-- Immersive full-screen character interactions
-- Parallax scrolling effects and micro-interactions
+- Spotify-inspired interface with persistent sidebar navigation
+- Enhanced character cards with gradient overlays and hover effects
+- Pulsing microphone buttons for intuitive voice interaction
+- Search and filter system with popover dropdowns
+- Dynamic color theming based on active character
+- Smooth page transitions and loading states
+- Mobile-responsive drawer navigation

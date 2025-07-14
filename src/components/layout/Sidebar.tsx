@@ -205,12 +205,16 @@ const Sidebar = ({ isCompact = false, onCharacterSelect, onSettingsClick }: Side
     >
       {/* Logo/Header */}
       <div className="p-6 pb-2">
-        <motion.h2 
-          className="text-xl font-bold text-white"
+        <motion.div 
+          className="flex items-center justify-center"
           whileHover={{ scale: 1.05 }}
         >
-          {isCompact ? '🎭' : '🎭 ToyVox'}
-        </motion.h2>
+          <img 
+            src="https://storage.googleapis.com/toy-vox-public-assets/public-assets/logo.png" 
+            alt="ToyVox" 
+            className={isCompact ? "w-12 h-auto" : "w-full max-w-[200px] h-auto"}
+          />
+        </motion.div>
       </div>
 
       {/* Search removed - moved to main window */}

@@ -29,7 +29,11 @@ const SidebarDrawer = ({ isOpen, onClose, onCharacterSelect }: SidebarDrawerProp
     >
       <DrawerContent>
         <DrawerHeader className="flex items-center justify-between border-b border-white/10">
-          <h2 className="text-xl font-bold text-white">🎭 ToyVox</h2>
+          <img 
+            src="https://storage.googleapis.com/toy-vox-public-assets/public-assets/logo.png" 
+            alt="ToyVox" 
+            className="h-10 w-auto"
+          />
           <Button
             isIconOnly
             size="sm"
